@@ -33,10 +33,21 @@
     <div class="counter" id="counter"></div>
 
     <button class="btn-next" id="btn-next-item">Следующая →</button>
+    <button class="btn-list" id="btn-show-list">Весь список</button>
 
     <p class="keyboard-hint">
         <kbd>Пробел</kbd> следующая &nbsp; <kbd>Enter</kbd> перевернуть
     </p>
+
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modal-title"></h3>
+                <button class="modal-close" id="modal-close">✕</button>
+            </div>
+            <div class="modal-body" id="modal-body"></div>
+        </div>
+    </div>
 
     <script type="module" src="js/app.js"></script>
 </body>

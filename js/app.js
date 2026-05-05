@@ -9,17 +9,22 @@ const counts   = { verbs: 'глаголов', hard: 'глаголов', phrases:
 let currentMode = 'verbs';
 let sessionCount = 0;
 
-const cardWrapper = document.getElementById('card-wrapper');
-const cardElement = document.getElementById('card-element');
-const textFront   = document.getElementById('text-front');
-const textBack    = document.getElementById('text-back');
-const cardBadge   = document.getElementById('card-badge');
-const counter     = document.getElementById('counter');
-const subtitle    = document.getElementById('subtitle');
-const btnVerbs    = document.getElementById('btn-verbs');
-const btnHard     = document.getElementById('btn-hard');
-const btnPhrases  = document.getElementById('btn-phrases');
-const btnNext     = document.getElementById('btn-next-item');
+const cardWrapper  = document.getElementById('card-wrapper');
+const cardElement  = document.getElementById('card-element');
+const textFront    = document.getElementById('text-front');
+const textBack     = document.getElementById('text-back');
+const cardBadge    = document.getElementById('card-badge');
+const counter      = document.getElementById('counter');
+const subtitle     = document.getElementById('subtitle');
+const btnVerbs     = document.getElementById('btn-verbs');
+const btnHard      = document.getElementById('btn-hard');
+const btnPhrases   = document.getElementById('btn-phrases');
+const btnNext      = document.getElementById('btn-next-item');
+const btnShowList  = document.getElementById('btn-show-list');
+const modalOverlay = document.getElementById('modal-overlay');
+const modalTitle   = document.getElementById('modal-title');
+const modalBody    = document.getElementById('modal-body');
+const modalClose   = document.getElementById('modal-close');
 
 function updateSubtitle() {
     const data = datasets[currentMode];
@@ -71,16 +76,42 @@ function handleTabClick(mode, activeBtn) {
     updateUI();
 }
 
+function openList() {
+    const data = datasets[currentMode];
+    const isVerbs = currentMode !== 'phrases';
+
+    modalTitle.textContent = `${labels[currentMode]}ы — ${data.length} ${counts[currentMode]}`;
+
+    modalBody.innerHTML = data.map(item => `
+        <div class="list-item">
+            <span class="en">${item.en}</span>
+            <span class="ru">${item.ru}</span>
+            ${isVerbs ? `<span class="past">${item.past}</span>` : ''}
+        </div>
+    `).join('');
+
+    modalOverlay.classList.add('open');
+}
+
+function closeList() {
+    modalOverlay.classList.remove('open');
+}
+
 document.addEventListener('keydown', (e) => {
+    if (e.code === 'Escape') closeList();
+    if (modalOverlay.classList.contains('open')) return;
     if (e.code === 'Space') { e.preventDefault(); updateUI(); }
     if (e.code === 'Enter') cardElement.classList.toggle('is-flipped');
 });
 
 cardWrapper.addEventListener('click', () => cardElement.classList.toggle('is-flipped'));
-btnVerbs.addEventListener('click',   () => handleTabClick('verbs',   btnVerbs));
-btnHard.addEventListener('click',    () => handleTabClick('hard',    btnHard));
-btnPhrases.addEventListener('click', () => handleTabClick('phrases', btnPhrases));
+btnVerbs.addEventListener('click',    () => handleTabClick('verbs',   btnVerbs));
+btnHard.addEventListener('click',     () => handleTabClick('hard',    btnHard));
+btnPhrases.addEventListener('click',  () => handleTabClick('phrases', btnPhrases));
 btnNext.addEventListener('click', updateUI);
+btnShowList.addEventListener('click', openList);
+modalClose.addEventListener('click', closeList);
+modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeList(); });
 
 updateSubtitle();
 updateUI();
