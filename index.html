@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Trainer</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="header">
+        <h1>English Trainer</h1>
+        <p id="subtitle"></p>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" id="btn-verbs">Глаголы</button>
+        <button class="tab-btn" id="btn-hard">Сложные</button>
+        <button class="tab-btn" id="btn-phrases">Фразы</button>
+    </div>
+
+    <div class="card-container" id="card-wrapper">
+        <div class="card" id="card-element">
+            <div class="card-face">
+                <div class="card-badge" id="card-badge">Глагол</div>
+                <h2 id="text-front">...</h2>
+                <span class="card-hint">нажмите, чтобы перевернуть</span>
+            </div>
+            <div class="card-face card-back" id="text-back"></div>
+        </div>
+    </div>
+
+    <div class="counter" id="counter"></div>
+
+    <button class="btn-next" id="btn-next-item">Следующая →</button>
+
+    <p class="keyboard-hint">
+        <kbd>Пробел</kbd> следующая &nbsp; <kbd>Enter</kbd> перевернуть
+    </p>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
