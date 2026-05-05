@@ -241,6 +241,7 @@ body {
     z-index: 100;
     opacity: 0;
     pointer-events: none;
+    overflow: hidden;
     transition: opacity 0.25s ease;
 }
 
