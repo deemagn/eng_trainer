@@ -20,7 +20,10 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    height: 60px;
+    height: calc(60px + env(safe-area-inset-top));
+    padding-top: env(safe-area-inset-top);
+    padding-left: 24px;
+    padding-right: 24px;
     background: rgba(15, 23, 42, 0.8);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
@@ -29,7 +32,6 @@ body {
     align-items: center;
     justify-content: flex-start;
     gap: 24px;
-    padding: 0 24px;
     z-index: 50;
 }
 
@@ -74,7 +76,10 @@ body {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    padding: 80px 24px 40px;
+    padding-top: calc(80px + env(safe-area-inset-top));
+    padding-bottom: calc(40px + env(safe-area-inset-bottom));
+    padding-left: 24px;
+    padding-right: 24px;
 }
 
 .page.active {
