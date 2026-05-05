@@ -8,37 +8,69 @@
 </head>
 <body>
 
-    <div class="header">
-        <h1>English Trainer</h1>
-        <p id="subtitle"></p>
-    </div>
-
-    <div class="tabs">
-        <button class="tab-btn active" id="btn-verbs">Глаголы</button>
-        <button class="tab-btn" id="btn-hard">Сложные</button>
-        <button class="tab-btn" id="btn-phrases">Фразы</button>
-    </div>
-
-    <div class="card-container" id="card-wrapper">
-        <div class="card" id="card-element">
-            <div class="card-face">
-                <div class="card-badge" id="card-badge">Глагол</div>
-                <h2 id="text-front">...</h2>
-                <span class="card-hint">нажмите, чтобы перевернуть</span>
-            </div>
-            <div class="card-face card-back" id="text-back"></div>
+    <nav class="navbar">
+        <span class="nav-logo">English Trainer</span>
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-page="cards">Карточки</button>
+            <button class="nav-tab" data-page="sentences">Предложения</button>
         </div>
-    </div>
+    </nav>
 
-    <div class="counter" id="counter"></div>
+    <!-- Карточки -->
+    <section id="page-cards" class="page active">
+        <p id="subtitle" class="page-subtitle"></p>
 
-    <button class="btn-next" id="btn-next-item">Следующая →</button>
-    <button class="btn-list" id="btn-show-list">Весь список</button>
+        <div class="tabs">
+            <button class="tab-btn active" id="btn-verbs">Глаголы</button>
+            <button class="tab-btn" id="btn-hard">Сложные</button>
+            <button class="tab-btn" id="btn-phrases">Фразы</button>
+        </div>
 
-    <p class="keyboard-hint">
-        <kbd>Пробел</kbd> следующая &nbsp; <kbd>Enter</kbd> перевернуть
-    </p>
+        <div class="card-container" id="card-wrapper">
+            <div class="card" id="card-element">
+                <div class="card-face">
+                    <div class="card-badge" id="card-badge">Глагол</div>
+                    <h2 id="text-front">...</h2>
+                    <span class="card-hint">нажмите, чтобы перевернуть</span>
+                </div>
+                <div class="card-face card-back" id="text-back"></div>
+            </div>
+        </div>
 
+        <div class="counter" id="counter"></div>
+
+        <button class="btn-next" id="btn-next-item">Следующая →</button>
+        <button class="btn-list" id="btn-show-list">Весь список</button>
+
+        <p class="keyboard-hint">
+            <kbd>Пробел</kbd> следующая &nbsp; <kbd>Enter</kbd> перевернуть
+        </p>
+    </section>
+
+    <!-- Предложения -->
+    <section id="page-sentences" class="page">
+        <p id="sent-subtitle" class="page-subtitle"></p>
+
+        <div class="card-container sent-card-container" id="sent-card-wrapper">
+            <div class="card" id="sent-card-element">
+                <div class="card-face">
+                    <h2 id="sent-text-front">...</h2>
+                    <span class="card-hint">нажмите, чтобы перевернуть</span>
+                </div>
+                <div class="card-face card-back" id="sent-text-back"></div>
+            </div>
+        </div>
+
+        <div class="counter" id="sent-counter"></div>
+
+        <button class="btn-next" id="sent-btn-next">Следующая →</button>
+
+        <p class="keyboard-hint">
+            <kbd>Пробел</kbd> следующая &nbsp; <kbd>Enter</kbd> перевернуть
+        </p>
+    </section>
+
+    <!-- Модальное окно (глобальное) -->
     <div class="modal-overlay" id="modal-overlay">
         <div class="modal">
             <div class="modal-header">

@@ -1,10 +1,12 @@
 import { verbs } from '../data/verbs.js';
 import { hardVerbs } from '../data/hard-verbs.js';
 import { phrases } from '../data/phrases.js';
+import { initSentences } from './sentences.js';
 
-const datasets = { verbs, hard: hardVerbs, phrases };
-const labels   = { verbs: 'Глагол', hard: 'Сложный глагол', phrases: 'Фраза' };
-const counts   = { verbs: 'глаголов', hard: 'глаголов', phrases: 'фраз' };
+const datasets     = { verbs, hard: hardVerbs, phrases };
+const labels       = { verbs: 'Глагол', hard: 'Сложный глагол', phrases: 'Фраза' };
+const counts       = { verbs: 'глаголов', hard: 'глаголов', phrases: 'фраз' };
+const modalTitles  = { verbs: 'Глаголы', hard: 'Сложные глаголы', phrases: 'Фразы' };
 
 let currentMode = 'verbs';
 let sessionCount = 0;
@@ -25,6 +27,8 @@ const modalOverlay = document.getElementById('modal-overlay');
 const modalTitle   = document.getElementById('modal-title');
 const modalBody    = document.getElementById('modal-body');
 const modalClose   = document.getElementById('modal-close');
+
+// ── Cards page ────────────────────────────────────────────
 
 function updateSubtitle() {
     const data = datasets[currentMode];
@@ -76,12 +80,12 @@ function handleTabClick(mode, activeBtn) {
     updateUI();
 }
 
+// ── Modal ─────────────────────────────────────────────────
+
 function openList() {
     const data = datasets[currentMode];
     const isVerbs = currentMode !== 'phrases';
-
-    modalTitle.textContent = `${labels[currentMode]}ы — ${data.length} ${counts[currentMode]}`;
-
+    modalTitle.textContent = `${modalTitles[currentMode]} — ${data.length} ${counts[currentMode]}`;
     modalBody.innerHTML = data.map(item => `
         <div class="list-item">
             <span class="en">${item.en}</span>
@@ -89,7 +93,6 @@ function openList() {
             ${isVerbs ? `<span class="past">${item.past}</span>` : ''}
         </div>
     `).join('');
-
     modalOverlay.classList.add('open');
 }
 
@@ -97,21 +100,51 @@ function closeList() {
     modalOverlay.classList.remove('open');
 }
 
+// ── Navigation ────────────────────────────────────────────
+
+const navTabs = document.querySelectorAll('.nav-tab');
+const pages   = document.querySelectorAll('.page');
+
+function switchPage(pageId) {
+    pages.forEach(p => p.classList.remove('active'));
+    navTabs.forEach(t => t.classList.remove('active'));
+    document.getElementById(`page-${pageId}`).classList.add('active');
+    document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
+}
+
+navTabs.forEach(tab => tab.addEventListener('click', () => switchPage(tab.dataset.page)));
+
+// ── Keyboard shortcuts ────────────────────────────────────
+
+const sentCtrl = initSentences();
+
 document.addEventListener('keydown', (e) => {
-    if (e.code === 'Escape') closeList();
-    if (modalOverlay.classList.contains('open')) return;
-    if (e.code === 'Space') { e.preventDefault(); updateUI(); }
-    if (e.code === 'Enter') cardElement.classList.toggle('is-flipped');
+    if (e.code === 'Escape') { closeList(); return; }
+
+    const activePage = document.querySelector('.page.active')?.id;
+
+    if (activePage === 'page-cards') {
+        if (modalOverlay.classList.contains('open')) return;
+        if (e.code === 'Space') { e.preventDefault(); updateUI(); }
+        if (e.code === 'Enter') cardElement.classList.toggle('is-flipped');
+    } else if (activePage === 'page-sentences') {
+        if (e.code === 'Space') { e.preventDefault(); sentCtrl.updateUI(); }
+        if (e.code === 'Enter') sentCtrl.flip();
+    }
 });
 
-cardWrapper.addEventListener('click', () => cardElement.classList.toggle('is-flipped'));
-btnVerbs.addEventListener('click',    () => handleTabClick('verbs',   btnVerbs));
-btnHard.addEventListener('click',     () => handleTabClick('hard',    btnHard));
-btnPhrases.addEventListener('click',  () => handleTabClick('phrases', btnPhrases));
+// ── Event listeners ───────────────────────────────────────
+
+cardWrapper.addEventListener('click',   () => cardElement.classList.toggle('is-flipped'));
+btnVerbs.addEventListener('click',      () => handleTabClick('verbs',   btnVerbs));
+btnHard.addEventListener('click',       () => handleTabClick('hard',    btnHard));
+btnPhrases.addEventListener('click',    () => handleTabClick('phrases', btnPhrases));
 btnNext.addEventListener('click', updateUI);
 btnShowList.addEventListener('click', openList);
 modalClose.addEventListener('click', closeList);
 modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeList(); });
+
+// ── Init ──────────────────────────────────────────────────
 
 updateSubtitle();
 updateUI();
