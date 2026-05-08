@@ -1,12 +1,13 @@
 import { verbs } from '../data/verbs.js';
 import { hardVerbs } from '../data/hard-verbs.js';
 import { phrases } from '../data/phrases.js';
+import { markers } from '../data/markers.js';
 import { initSentences } from './sentences.js';
 
-const datasets     = { verbs, hard: hardVerbs, phrases };
-const labels       = { verbs: 'Глагол', hard: 'Сложный глагол', phrases: 'Фраза' };
-const counts       = { verbs: 'глаголов', hard: 'глаголов', phrases: 'фраз' };
-const modalTitles  = { verbs: 'Глаголы', hard: 'Сложные глаголы', phrases: 'Фразы' };
+const datasets     = { verbs, hard: hardVerbs, phrases, markers };
+const labels       = { verbs: 'Глагол', hard: 'Сложный глагол', phrases: 'Фраза', markers: 'Маркер' };
+const counts       = { verbs: 'глаголов', hard: 'глаголов', phrases: 'фраз', markers: 'маркеров' };
+const modalTitles  = { verbs: 'Глаголы', hard: 'Сложные глаголы', phrases: 'Фразы', markers: 'Маркеры' };
 
 let currentMode = 'verbs';
 let sessionCount = 0;
@@ -21,6 +22,7 @@ const subtitle     = document.getElementById('subtitle');
 const btnVerbs     = document.getElementById('btn-verbs');
 const btnHard      = document.getElementById('btn-hard');
 const btnPhrases   = document.getElementById('btn-phrases');
+const btnMarkers   = document.getElementById('btn-markers');
 const btnNext      = document.getElementById('btn-next-item');
 const btnShowList  = document.getElementById('btn-show-list');
 const modalOverlay = document.getElementById('modal-overlay');
@@ -49,7 +51,7 @@ function updateUI() {
         cardBadge.textContent = labels[currentMode];
         textFront.innerText = isEnglishFirst ? item.en : item.ru;
 
-        if (currentMode === 'phrases') {
+        if (currentMode === 'phrases' || currentMode === 'markers') {
             textBack.innerHTML = `<h2>${isEnglishFirst ? item.ru : item.en}</h2>`;
         } else if (isEnglishFirst) {
             textBack.innerHTML = `
@@ -74,7 +76,7 @@ function handleTabClick(mode, activeBtn) {
     if (currentMode === mode) return;
     currentMode = mode;
     sessionCount = 0;
-    [btnVerbs, btnHard, btnPhrases].forEach(btn => btn.classList.remove('active'));
+    [btnVerbs, btnHard, btnPhrases, btnMarkers].forEach(btn => btn.classList.remove('active'));
     activeBtn.classList.add('active');
     updateSubtitle();
     updateUI();
@@ -84,7 +86,7 @@ function handleTabClick(mode, activeBtn) {
 
 function openList() {
     const data = datasets[currentMode];
-    const isVerbs = currentMode !== 'phrases';
+    const isVerbs = currentMode !== 'phrases' && currentMode !== 'markers';
     modalTitle.textContent = `${modalTitles[currentMode]} — ${data.length} ${counts[currentMode]}`;
     modalBody.innerHTML = data.map(item => `
         <div class="list-item">
@@ -139,6 +141,7 @@ cardWrapper.addEventListener('click',   () => cardElement.classList.toggle('is-f
 btnVerbs.addEventListener('click',      () => handleTabClick('verbs',   btnVerbs));
 btnHard.addEventListener('click',       () => handleTabClick('hard',    btnHard));
 btnPhrases.addEventListener('click',    () => handleTabClick('phrases', btnPhrases));
+btnMarkers.addEventListener('click',    () => handleTabClick('markers', btnMarkers));
 btnNext.addEventListener('click', updateUI);
 btnShowList.addEventListener('click', openList);
 modalClose.addEventListener('click', closeList);
