@@ -101,6 +101,14 @@ body {
     padding: 5px;
     gap: 4px;
     margin-bottom: 36px;
+    max-width: calc(100vw - 48px);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar {
+    display: none;
 }
 
 .tab-btn {
