@@ -57,7 +57,7 @@ export const phrases = [
     { en: "Let's make it happen",       ru: "Давай это сделаем" },
     { en: "In my opinion",              ru: "По моему мнению" },
     { en: "I guess so",                 ru: "Полагаю да" },
-    { en: "I'm not convinced",          ru: "Не совсем уверен" },
+    { en: "I'm not convinced",          ru: "Я не убеждён в этом" },
     { en: "That makes sense",           ru: "Логично" },
     { en: "You never know",             ru: "Кто знает / Может быть" },
     { en: "Don't worry, I got you",     ru: "Не волнуйся, я позабочусь об этом" },
