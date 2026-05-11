@@ -7,5 +7,11 @@ export const hardVerbs = [
     { en: "teach",  ru: "учить (кого-то)",  past: "taught" },
     { en: "fly",    ru: "летать",           past: "flew" },
     { en: "draw",   ru: "рисовать",         past: "drew" },
-    { en: "hide",   ru: "прятать",          past: "hid" },
+    { en: "hide",       ru: "прятать",          past: "hid" },
+    { en: "offer",      ru: "предлагать",       past: "offered" },
+    { en: "consider",   ru: "считать",          past: "considered" },
+    { en: "appear",     ru: "появляться",       past: "appeared" },
+    { en: "serve",      ru: "обслуживать",      past: "served" },
+    { en: "reach",      ru: "достигать",        past: "reached" },
+    { en: "explain",    ru: "объяснять",        past: "explained" },
 ];
