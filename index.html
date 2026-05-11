@@ -13,7 +13,7 @@
         <span class="nav-logo">English Trainer</span>
         <div class="nav-tabs">
             <button class="nav-tab active" data-page="cards">Карточки</button>
-            <button class="nav-tab" data-page="sentences">Предложения</button>
+            <button class="nav-tab" data-page="sentences">Диалоги</button>
         </div>
     </nav>
 
@@ -49,27 +49,15 @@
         </p>
     </section>
 
-    <!-- Предложения -->
-    <section id="page-sentences" class="page">
-        <p id="sent-subtitle" class="page-subtitle"></p>
-
-        <div class="card-container sent-card-container" id="sent-card-wrapper">
-            <div class="card" id="sent-card-element">
-                <div class="card-face">
-                    <h2 id="sent-text-front">...</h2>
-                    <span class="card-hint">нажмите, чтобы перевернуть</span>
-                </div>
-                <div class="card-face card-back" id="sent-text-back"></div>
-            </div>
+    <!-- Диалоги -->
+    <section id="page-sentences" class="page dialogue-page">
+        <div class="dialogue-header">
+            <button class="dialogue-nav-btn" id="dial-prev">←</button>
+            <h2 class="dialogue-title" id="dial-title"></h2>
+            <button class="dialogue-nav-btn" id="dial-next">→</button>
         </div>
-
-        <div class="counter" id="sent-counter"></div>
-
-        <button class="btn-next" id="sent-btn-next">Следующая →</button>
-
-        <p class="keyboard-hint">
-            <kbd>Пробел</kbd> следующая &nbsp; <kbd>Enter</kbd> перевернуть
-        </p>
+        <p class="dialogue-counter" id="dial-counter"></p>
+        <div class="dialogue-list" id="dialogue-list"></div>
     </section>
 
     <!-- Модальное окно (глобальное) -->

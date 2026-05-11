@@ -2,7 +2,7 @@ import { verbs } from '../data/verbs.js';
 import { hardVerbs } from '../data/hard-verbs.js';
 import { phrases } from '../data/phrases.js';
 import { markers } from '../data/markers.js';
-import { initSentences } from './sentences.js';
+import { initDialogues } from './dialogues.js';
 
 const datasets     = { verbs, hard: hardVerbs, phrases, markers };
 const labels       = { verbs: 'Глагол', hard: 'Сложный глагол', phrases: 'Фраза', markers: 'Маркер' };
@@ -118,7 +118,7 @@ navTabs.forEach(tab => tab.addEventListener('click', () => switchPage(tab.datase
 
 // ── Keyboard shortcuts ────────────────────────────────────
 
-const sentCtrl = initSentences();
+initDialogues();
 
 document.addEventListener('keydown', (e) => {
     if (e.code === 'Escape') { closeList(); return; }
@@ -129,9 +129,6 @@ document.addEventListener('keydown', (e) => {
         if (modalOverlay.classList.contains('open')) return;
         if (e.code === 'Space') { e.preventDefault(); updateUI(); }
         if (e.code === 'Enter') cardElement.classList.toggle('is-flipped');
-    } else if (activePage === 'page-sentences') {
-        if (e.code === 'Space') { e.preventDefault(); sentCtrl.updateUI(); }
-        if (e.code === 'Enter') sentCtrl.flip();
     }
 });
 

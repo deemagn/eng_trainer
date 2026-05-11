@@ -428,6 +428,132 @@ body {
     white-space: nowrap;
 }
 
+/* ── Dialogues ── */
+.dialogue-page {
+    justify-content: flex-start;
+    gap: 0;
+}
+
+.dialogue-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 8px;
+}
+
+.dialogue-nav-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.dialogue-nav-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.dialogue-nav-btn:disabled {
+    opacity: 0.25;
+    cursor: default;
+}
+
+.dialogue-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+}
+
+.dialogue-counter {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.35);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.dialogue-list {
+    width: 100%;
+    max-width: 520px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dialogue-line {
+    border-radius: 16px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    max-width: 88%;
+}
+
+.line-left {
+    background: #fff;
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+}
+
+.line-right {
+    background: #eef2ff;
+    align-self: flex-end;
+    flex-direction: row-reverse;
+    border-bottom-right-radius: 4px;
+}
+
+.line-right .speak-btn {
+    background: #fff;
+}
+
+.dialogue-line-body {
+    flex: 1;
+}
+
+.dialogue-en {
+    font-size: 15px;
+    font-weight: 600;
+    color: #0f172a;
+    line-height: 1.4;
+}
+
+.dialogue-ru {
+    font-size: 13px;
+    color: #64748b;
+    margin-top: 3px;
+    line-height: 1.4;
+}
+
+.speak-btn {
+    background: #eef2ff;
+    border: none;
+    color: #6366f1;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.speak-btn:hover {
+    background: #e0e7ff;
+}
+
+.speak-btn.speaking {
+    background: #6366f1;
+    color: #fff;
+}
+
 /* ── Keyboard hint ── */
 .keyboard-hint {
     margin-top: 20px;
