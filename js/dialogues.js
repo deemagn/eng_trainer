@@ -1,5 +1,4 @@
 import { dialogues } from '../data/dialogues.js';
-import { audioMap }  from '../data/audio-map.js';
 
 export function initDialogues() {
     const titleEl   = document.getElementById('dial-title');
@@ -11,16 +10,13 @@ export function initDialogues() {
     let current = 0;
     let activeAudio = null;
 
-    function speak(text, btn) {
-        // Останавливаем предыдущее воспроизведение
+    function speak(text, audioPath, btn) {
         if (activeAudio) {
             activeAudio.pause();
             activeAudio = null;
         }
         document.querySelectorAll('.speak-btn.speaking')
             .forEach(b => b.classList.remove('speaking'));
-
-        const audioPath = audioMap[text];
 
         if (audioPath) {
             const audio = new Audio(audioPath);
@@ -29,6 +25,7 @@ export function initDialogues() {
             audio.play();
             audio.onended  = () => { btn.classList.remove('speaking'); activeAudio = null; };
             audio.onerror  = () => { btn.classList.remove('speaking'); activeAudio = null; speakFallback(text, btn); };
+
         } else {
             speakFallback(text, btn);
         }
@@ -70,7 +67,7 @@ export function initDialogues() {
         `).join('');
 
         listEl.querySelectorAll('.speak-btn').forEach((btn, i) => {
-            btn.addEventListener('click', () => speak(dialogue.lines[i].en, btn));
+            btn.addEventListener('click', () => speak(dialogue.lines[i].en, dialogue.lines[i].audio, btn));
         });
     }
 

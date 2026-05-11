@@ -435,10 +435,17 @@ body {
 }
 
 .dialogue-header {
-    display: flex;
+    display: grid;
+    grid-template-columns: 40px 1fr 40px;
     align-items: center;
-    gap: 16px;
+    gap: 8px;
+    width: 100%;
+    max-width: 520px;
     margin-bottom: 8px;
+}
+
+.dialogue-title {
+    text-align: center;
 }
 
 .dialogue-nav-btn {
@@ -467,7 +474,6 @@ body {
     font-size: 18px;
     font-weight: 700;
     color: #fff;
-    text-align: center;
 }
 
 .dialogue-counter {

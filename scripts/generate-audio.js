@@ -4,17 +4,16 @@ import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const rootDir   = join(__dirname, '..');
-const AUDIO_DIR = join(rootDir, 'audio');
-const MAP_FILE  = join(rootDir, 'data', 'audio-map.js');
+const __dirname      = dirname(fileURLToPath(import.meta.url));
+const rootDir        = join(__dirname, '..');
+const AUDIO_DIR      = join(rootDir, 'audio');
+const DIALOGUES_FILE = join(rootDir, 'data', 'dialogues.js');
 
 // Модель и голос — меняй здесь
 const MODEL = 'jaaari/kokoro-82m:f559560eb822dc509045f3921a1921234918b91739db4bf3daab2169b71c7a13';
 const VOICE = 'af_sarah'; // am_adam, bf_alice, bm_george, bm_lewis, ...
 
-const { dialogues } = await import('../data/dialogues.js');
-const { audioMap: existingMap } = await import('../data/audio-map.js');
+const { dialogues } = await import(`../data/dialogues.js?t=${Date.now()}`);
 
 mkdirSync(AUDIO_DIR, { recursive: true });
 
@@ -24,29 +23,28 @@ function hash(text) {
     return createHash('md5').update(text).digest('hex').slice(0, 8);
 }
 
-async function generateLine(text) {
-    // Если запись уже есть в карте и файл на диске — пропускаем
-    if (existingMap[text] && existsSync(join(rootDir, existingMap[text]))) {
-        console.log(`  ✓ пропускаю (уже есть): "${text.slice(0, 50)}"`);
-        return existingMap[text];
+async function generateLine(line) {
+    const { en, audio } = line;
+
+    // Если путь уже есть и файл на диске — пропускаем
+    if (audio && existsSync(join(rootDir, audio))) {
+        console.log(`  ✓ пропускаю (уже есть): "${en.slice(0, 50)}"`);
+        return audio;
     }
 
-    const filename = `${hash(text)}.wav`;
-    const filepath = join(AUDIO_DIR, filename);
-    const webPath  = `audio/${filename}`;
+    const webPath = `audio/${hash(en)}.wav`;
+    const filepath = join(rootDir, webPath);
 
-    console.log(`  ⟳ Генерирую: "${text.slice(0, 60)}"`);
+    console.log(`  ⟳ Генерирую: "${en.slice(0, 60)}"`);
 
     const output = await replicate.run(MODEL, {
-        input: { text, voice: VOICE, lang_code: 'a', speed: 1.0 },
+        input: { text: en, voice: VOICE, lang_code: 'a', speed: 1.0 },
     });
 
     let buf;
     if (output && typeof output.blob === 'function') {
-        // FileOutput объект (Replicate SDK v1+)
         buf = Buffer.from(await (await output.blob()).arrayBuffer());
     } else if (output && typeof output.getReader === 'function') {
-        // ReadableStream
         const reader = output.getReader();
         const chunks = [];
         while (true) {
@@ -56,28 +54,24 @@ async function generateLine(text) {
         }
         buf = Buffer.concat(chunks);
     } else {
-        // URL-строка
         const res = await fetch(typeof output === 'string' ? output : String(output));
         buf = Buffer.from(await res.arrayBuffer());
     }
     writeFileSync(filepath, buf);
 
-    console.log(`  ✓ Сохранено: ${filename}`);
+    console.log(`  ✓ Сохранено: ${webPath}`);
     return webPath;
 }
 
-// Начинаем с существующей карты, чтобы не потерять старые записи
-const map = { ...existingMap };
-
+// Обходим все диалоги и дописываем поле audio в каждую реплику
 for (const dialogue of dialogues) {
     console.log(`\n📝 ${dialogue.title}`);
     for (const line of dialogue.lines) {
-        map[line.en] = await generateLine(line.en);
+        line.audio = await generateLine(line);
     }
 }
 
-const js = `// Авто-генерируется скриптом scripts/generate-audio.js — не редактировать вручную
-export const audioMap = ${JSON.stringify(map, null, 4)};
-`;
-writeFileSync(MAP_FILE, js);
-console.log(`\n✅ Карта аудио сохранена → data/audio-map.js`);
+// Записываем обновлённый dialogues.js
+const js = `export const dialogues = ${JSON.stringify(dialogues, null, 4)};\n`;
+writeFileSync(DIALOGUES_FILE, js);
+console.log(`\n✅ data/dialogues.js обновлён с аудио-путями`);
