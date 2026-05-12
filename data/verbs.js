@@ -63,7 +63,7 @@ export const verbs = [
     { en: "teach",      ru: "учить (кого-то)",  past: "taught" },
     { en: "offer",      ru: "предлагать",       past: "offered" },
     { en: "remember",   ru: "помнить",          past: "remembered" },
-    { en: "consider",   ru: "считать",          past: "considered" },
+    { en: "consider",   ru: "считать / обдумывать / полагать / учитывать", past: "considered" },
     { en: "appear",     ru: "появляться",       past: "appeared" },
     { en: "buy",        ru: "покупать",         past: "bought" },
     { en: "serve",      ru: "обслуживать",      past: "served" },
