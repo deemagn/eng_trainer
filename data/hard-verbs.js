@@ -9,7 +9,7 @@ export const hardVerbs = [
     { en: "draw",   ru: "рисовать",         past: "drew" },
     { en: "hide",       ru: "прятать",          past: "hid" },
     { en: "offer",      ru: "предлагать",       past: "offered" },
-    { en: "consider",   ru: "считать / обдумывать / полагать / учитывать", past: "considered" },
+    { en: "consider",   ru: "считать / обдумывать / учитывать", past: "considered" },
     { en: "appear",     ru: "появляться",       past: "appeared" },
     { en: "serve",      ru: "обслуживать",      past: "served" },
     { en: "reach",      ru: "достигать",        past: "reached" },
