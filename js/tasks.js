@@ -1,11 +1,15 @@
+import { variants } from '../data/tasks/grammar-context.js';
 import { initGrammarContextTask } from './tasks/grammar-context.js';
 
-const taskRegistry = [
+const taskGroups = [
     {
-        id:          'grammar-context',
-        title:       'Контекст употребления времён',
+        title:       '🎯 Выбрать контекст для времён Present',
         description: '10 предложений — определи контекст',
-        init:        initGrammarContextTask,
+        variants:    variants.map((v, i) => ({
+            id:   `grammar-context-${i + 1}`,
+            label: `${i + 1}`,
+            init: (container) => initGrammarContextTask(container, v.sentences),
+        })),
     },
 ];
 
@@ -14,24 +18,32 @@ export function initTasks(switchPage) {
     const viewContent = document.getElementById('task-view-content');
     const backBtn     = document.getElementById('task-back-btn');
 
-    listEl.innerHTML = taskRegistry.map(t => `
-        <button class="task-card" data-id="${t.id}">
-            <div class="task-card-body">
-                <h3 class="task-card-title">${t.title}</h3>
-                <p class="task-card-desc">${t.description}</p>
+    // Flat map for quick lookup when a variant is clicked
+    const variantMap = {};
+    taskGroups.forEach(g => g.variants.forEach(v => { variantMap[v.id] = v; }));
+
+    listEl.innerHTML = taskGroups.map(g => `
+        <div class="task-group">
+            <div class="task-group-info">
+                <h3 class="task-card-title">${g.title}</h3>
+                <p class="task-card-desc">${g.description}</p>
             </div>
-            <span class="task-card-chevron">→</span>
-        </button>
+            <div class="task-variant-pills">
+                ${g.variants.map(v => `
+                    <button class="variant-pill" data-id="${v.id}">${v.label}</button>
+                `).join('')}
+            </div>
+        </div>
     `).join('');
 
     listEl.addEventListener('click', (e) => {
-        const card = e.target.closest('.task-card');
-        if (!card) return;
-        const task = taskRegistry.find(t => t.id === card.dataset.id);
-        if (!task) return;
+        const pill = e.target.closest('.variant-pill');
+        if (!pill) return;
+        const variant = variantMap[pill.dataset.id];
+        if (!variant) return;
 
         viewContent.innerHTML = '';
-        task.init(viewContent);
+        variant.init(viewContent);
         switchPage('task-view');
         document.querySelector('[data-page="tasks"]')?.classList.add('active');
     });

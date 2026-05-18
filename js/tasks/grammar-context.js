@@ -1,7 +1,16 @@
-import { grammarContextTask } from '../../data/tasks/grammar-context.js';
+import { contexts } from '../../data/tasks/grammar-context.js';
 
-export function initGrammarContextTask(container) {
-    const { sentences, contexts } = grammarContextTask;
+function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+export function initGrammarContextTask(container, rawSentences) {
+    const sentences = shuffle(rawSentences);
 
     const state = {
         current: 0,
@@ -45,7 +54,7 @@ export function initGrammarContextTask(container) {
         prevBtn.disabled       = i === 0;
         nextBtn.disabled       = i === sentences.length - 1;
 
-        const answeredTotal = Object.keys(state.answers).length;
+        const answeredTotal    = Object.keys(state.answers).length;
         progressEl.textContent = `Выполнено: ${answeredTotal} / ${sentences.length}`;
 
         const visible = answered !== undefined
@@ -70,22 +79,14 @@ export function initGrammarContextTask(container) {
         const correct = sentences[state.current].answer;
 
         if (contextId === correct) {
-            // Блокируем все кнопки
             optionsEl.querySelectorAll('.context-option').forEach(b => b.style.pointerEvents = 'none');
-
-            // Правильный — зелёный
             btn.classList.add('correct');
-
-            // Остальные — схлопываем
             optionsEl.querySelectorAll('.context-option').forEach(b => {
                 if (b !== btn) b.classList.add('hiding');
             });
-
-            // После анимации — сохраняем и перерисовываем
             setTimeout(() => {
                 state.answers[state.current] = contextId;
                 render();
-                // Добавляем анимацию "въезда" на место
                 requestAnimationFrame(() => {
                     optionsEl.querySelector('.correct')?.classList.add('arrived');
                 });
