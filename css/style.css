@@ -490,6 +490,97 @@ body {
     transform: translateY(0);
 }
 
+/* ── Single-type task card ── */
+.task-group--single {
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.task-group--single:hover {
+    background: rgba(255, 255, 255, 0.11);
+}
+
+.task-group-arrow {
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.3);
+    flex-shrink: 0;
+}
+
+/* ── Text fill task ── */
+.text-fill-task {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.text-fill-nav {
+    display: grid;
+    grid-template-columns: 40px 1fr 40px;
+    align-items: center;
+    gap: 8px;
+}
+
+.text-fill-nav-center {
+    text-align: center;
+}
+
+.text-fill-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.text-fill-letter {
+    background: #fff;
+    border-radius: 20px;
+    padding: 24px;
+    font-size: 15px;
+    line-height: 2.4;
+    color: #1e293b;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+
+.blank-input {
+    display: inline-block;
+    width: 148px;
+    border: none;
+    border-bottom: 2px solid #6366f1;
+    background: transparent;
+    font-size: 14px;
+    font-family: inherit;
+    color: #1e293b;
+    text-align: center;
+    outline: none;
+    padding: 1px 4px;
+    margin: 0 2px;
+    vertical-align: baseline;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.blank-input::placeholder {
+    color: #cbd5e1;
+}
+
+.blank-input:focus {
+    border-bottom-color: #4f46e5;
+    background: rgba(99, 102, 241, 0.06);
+    border-radius: 4px 4px 0 0;
+}
+
+.blank-input.correct {
+    border-bottom-color: #22c55e;
+    color: #15803d;
+    font-weight: 600;
+}
+
+.blank-input.wrong {
+    border-bottom-color: #ef4444;
+    color: #ef4444;
+    animation: shake 0.5s ease;
+}
+
 .task-card-body {
     flex: 1;
 }
