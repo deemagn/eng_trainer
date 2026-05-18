@@ -11,6 +11,16 @@ const taskGroups = [
             init: (container) => initGrammarContextTask(container, v.sentences),
         })),
     },
+    {
+        title:       '🎯 Выбрать контекст для времён Past',
+        description: '10 предложений — определи контекст',
+        variants:    [],
+    },
+    {
+        title:       '🎯 Выбрать контекст для времён Future',
+        description: '10 предложений — определи контекст',
+        variants:    [],
+    },
 ];
 
 export function initTasks(switchPage) {
