@@ -1,10 +1,10 @@
 import { verbs } from '../data/verbs.js';
-import { hardVerbs } from '../data/hard-verbs.js';
 import { phrases } from '../data/phrases.js';
 import { markers } from '../data/markers.js';
 import { initDialogues } from './dialogues.js';
 import { initTasks }    from './tasks.js';
 
+const hardVerbs    = verbs.filter(v => v.is_hard);
 const datasets     = { verbs, hard: hardVerbs, phrases, markers };
 const labels       = { verbs: 'Глагол', hard: 'Сложный глагол', phrases: 'Фраза', markers: 'Маркер' };
 const counts       = { verbs: 'глаголов', hard: 'глаголов', phrases: 'фраз', markers: 'маркеров' };
