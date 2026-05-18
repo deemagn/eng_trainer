@@ -441,22 +441,53 @@ body {
     gap: 12px;
 }
 
-.task-card {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    padding: 18px 20px;
+.task-group {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    padding: 20px;
     display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 16px;
-    cursor: pointer;
-    text-align: left;
-    width: 100%;
-    transition: background 0.2s;
 }
 
-.task-card:hover {
-    background: rgba(255, 255, 255, 0.11);
+.task-group-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.task-variant-pills {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.variant-pill {
+    background: #6366f1;
+    border: none;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.45);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.variant-pill:hover {
+    background: #4f46e5;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.55);
+}
+
+.variant-pill:active {
+    transform: translateY(0);
 }
 
 .task-card-body {
