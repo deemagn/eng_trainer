@@ -14,6 +14,7 @@
         <div class="nav-tabs">
             <button class="nav-tab active" data-page="cards">Карточки</button>
             <button class="nav-tab" data-page="sentences">Диалоги</button>
+            <button class="nav-tab" data-page="tasks">Задания</button>
         </div>
     </nav>
 
@@ -58,6 +59,20 @@
         </div>
         <p class="dialogue-counter" id="dial-counter"></p>
         <div class="dialogue-list" id="dialogue-list"></div>
+    </section>
+
+    <!-- Задания — список -->
+    <section id="page-tasks" class="page tasks-list-page">
+        <p class="page-subtitle">Выбери задание</p>
+        <div class="tasks-list" id="tasks-list"></div>
+    </section>
+
+    <!-- Задания — активное задание -->
+    <section id="page-task-view" class="page task-view-page">
+        <div class="task-view-header">
+            <button class="back-btn" id="task-back-btn">← Задания</button>
+        </div>
+        <div id="task-view-content" class="task-view-content"></div>
     </section>
 
     <!-- Модальное окно (глобальное) -->

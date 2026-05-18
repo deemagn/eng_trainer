@@ -3,6 +3,7 @@ import { hardVerbs } from '../data/hard-verbs.js';
 import { phrases } from '../data/phrases.js';
 import { markers } from '../data/markers.js';
 import { initDialogues } from './dialogues.js';
+import { initTasks }    from './tasks.js';
 
 const datasets     = { verbs, hard: hardVerbs, phrases, markers };
 const labels       = { verbs: 'Глагол', hard: 'Сложный глагол', phrases: 'Фраза', markers: 'Маркер' };
@@ -111,7 +112,7 @@ function switchPage(pageId) {
     pages.forEach(p => p.classList.remove('active'));
     navTabs.forEach(t => t.classList.remove('active'));
     document.getElementById(`page-${pageId}`).classList.add('active');
-    document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
+    document.querySelector(`[data-page="${pageId}"]`)?.classList.add('active');
 }
 
 navTabs.forEach(tab => tab.addEventListener('click', () => switchPage(tab.dataset.page)));
@@ -119,6 +120,7 @@ navTabs.forEach(tab => tab.addEventListener('click', () => switchPage(tab.datase
 // ── Keyboard shortcuts ────────────────────────────────────
 
 initDialogues();
+initTasks(switchPage);
 
 document.addEventListener('keydown', (e) => {
     if (e.code === 'Escape') { closeList(); return; }
