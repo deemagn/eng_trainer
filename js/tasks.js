@@ -1,5 +1,5 @@
 import { variants }            from '../data/tasks/grammar-context-present.js';
-import { barcelonaTask }        from '../data/tasks/text-fill-present.js';
+import { barcelonaTask, newApartmentTask } from '../data/tasks/text-fill-present.js';
 import { initGrammarContextTask } from './tasks/grammar-context.js';
 import { initTextFillTask }       from './tasks/text-fill.js';
 
@@ -16,6 +16,15 @@ const taskGroups = [
     },
     {
         type:        'variants',
+        title:       '✍️ Текст с применением времён Present',
+        description: 'Вставь правильную форму глагола',
+        variants: [
+            { id: 'text-fill-1', label: '1', init: (c) => initTextFillTask(c, barcelonaTask) },
+            { id: 'text-fill-2', label: '2', init: (c) => initTextFillTask(c, newApartmentTask) },
+        ],
+    },
+    {
+        type:        'variants',
         title:       '🎯 Выбрать контекст для времён Past',
         description: '10 предложений — определи контекст',
         variants:    [],
@@ -25,13 +34,6 @@ const taskGroups = [
         title:       '🎯 Выбрать контекст для времён Future',
         description: '10 предложений — определи контекст',
         variants:    [],
-    },
-    {
-        type:        'single',
-        id:          'text-fill-present',
-        title:       '✍️ Текст с применением времён Present',
-        description: 'Вставь правильную форму глагола',
-        init:        (container) => initTextFillTask(container, [barcelonaTask]),
     },
 ];
 
