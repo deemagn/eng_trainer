@@ -707,6 +707,23 @@ body {
     80%       { transform: translateX(5px); }
 }
 
+.tense-badge {
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid rgba(34, 197, 94, 0.45);
+    border-radius: 12px;
+    padding: 10px 16px;
+    color: #86efac;
+    font-size: 15px;
+    font-weight: 700;
+    text-align: center;
+    animation: tenseAppear 0.35s ease 0.2s both;
+}
+
+@keyframes tenseAppear {
+    from { opacity: 0; transform: translateY(10px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
 .task-progress {
     font-size: 13px;
     color: rgba(255, 255, 255, 0.3);

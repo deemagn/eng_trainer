@@ -28,6 +28,7 @@ export function initGrammarContextTask(container, rawSentences) {
                 <button class="task-nav-btn" id="gc-next">→</button>
             </div>
             <div class="task-options" id="gc-options"></div>
+            <div id="gc-tense"></div>
             <p class="task-progress" id="gc-progress"></p>
         </div>
     `;
@@ -35,6 +36,7 @@ export function initGrammarContextTask(container, rawSentences) {
     const sentenceEl = document.getElementById('gc-sentence');
     const counterEl  = document.getElementById('gc-counter');
     const optionsEl  = document.getElementById('gc-options');
+    const tenseEl    = document.getElementById('gc-tense');
     const progressEl = document.getElementById('gc-progress');
     const prevBtn    = document.getElementById('gc-prev');
     const nextBtn    = document.getElementById('gc-next');
@@ -68,7 +70,10 @@ export function initGrammarContextTask(container, rawSentences) {
             </button>
         `).join('');
 
-        if (answered === undefined) {
+        if (answered !== undefined) {
+            tenseEl.innerHTML = `<div class="tense-badge">${sentence.tense}</div>`;
+        } else {
+            tenseEl.innerHTML = '';
             optionsEl.querySelectorAll('.context-option').forEach(btn => {
                 btn.addEventListener('click', () => handleAnswer(btn.dataset.id, btn));
             });
