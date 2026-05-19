@@ -1,4 +1,4 @@
-const API_URL = 'http://178.105.169.98';
+const API_URL = 'https://api.goodnewsenglish.com';
 const TOKEN_KEY = 'et_token';
 const EMAIL_KEY = 'et_email';
 
