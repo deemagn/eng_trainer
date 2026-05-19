@@ -17,7 +17,7 @@
             <button class="nav-tab" data-page="sentences">Диалоги</button>
             <button class="nav-tab" data-page="tasks">Задания</button>
         </div>
-        <button class="nav-login-btn" id="btn-login">Войти</button>
+        <div class="nav-auth" id="nav-auth"></div>
     </nav>
 
     <!-- Карточки -->
@@ -85,6 +85,24 @@
                 <button class="modal-close" id="modal-close">✕</button>
             </div>
             <div class="modal-body" id="modal-body"></div>
+        </div>
+    </div>
+
+    <!-- Auth modal -->
+    <div class="auth-overlay" id="auth-overlay">
+        <div class="auth-modal">
+            <button class="auth-close" id="auth-close">✕</button>
+            <h2 class="auth-title">English Trainer</h2>
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-mode="login">Войти</button>
+                <button class="auth-tab" data-mode="register">Регистрация</button>
+            </div>
+            <form id="auth-form" class="auth-form">
+                <input class="auth-input" id="auth-email" type="email" placeholder="Email" autocomplete="email" required>
+                <input class="auth-input" id="auth-password" type="password" placeholder="Пароль" autocomplete="current-password" required>
+                <p class="auth-error" id="auth-error"></p>
+                <button class="auth-submit" id="auth-submit" type="submit">Войти</button>
+            </form>
         </div>
     </div>
 

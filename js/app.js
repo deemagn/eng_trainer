@@ -3,6 +3,7 @@ import { phrases } from '../data/phrases.js';
 import { markers } from '../data/markers.js';
 import { initDialogues } from './dialogues.js';
 import { initTasks }    from './tasks.js';
+import { initAuth }     from './auth.js';
 
 const hardVerbs    = verbs.filter(v => v.is_hard);
 const datasets     = { verbs, hard: hardVerbs, phrases, markers };
@@ -121,6 +122,7 @@ navTabs.forEach(tab => tab.addEventListener('click', () => switchPage(tab.datase
 
 initDialogues();
 initTasks(switchPage);
+initAuth();
 
 document.addEventListener('keydown', (e) => {
     if (e.code === 'Escape') { closeList(); return; }
