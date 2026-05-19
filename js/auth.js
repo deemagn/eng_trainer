@@ -83,15 +83,15 @@ export function initAuth() {
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const email    = emailInput.value.trim();
         const password = passwordInput.value;
         errorEl.textContent = '';
         submitBtn.disabled = true;
 
         try {
             const path = mode === 'login' ? '/api/auth/login' : '/api/auth/register';
-            const { token } = await apiPost(path, { email, password });
-            saveAuth(token, email);
+            const username = emailInput.value.trim();
+            const { token } = await apiPost(path, { username, password });
+            saveAuth(token, username);
             overlay.classList.remove('open');
             updateNavbar();
         } catch (err) {
