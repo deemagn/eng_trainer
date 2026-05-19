@@ -126,35 +126,220 @@ body {
     background: rgba(255, 255, 255, 0.18);
 }
 
-.nav-user-email {
+.nav-user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 5px 12px 5px 5px;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: background 0.2s;
+    position: relative;
+    user-select: none;
+}
+
+.nav-user:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.nav-avatar {
+    font-size: 20px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.nav-username {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.55);
-    max-width: 140px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    max-width: 90px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.nav-logout-btn {
-    padding: 8px 16px;
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 50px;
-    color: rgba(255, 255, 255, 0.65);
-    font-size: 13px;
-    font-weight: 600;
+.nav-dropdown {
+    position: absolute;
+    top: calc(60px + env(safe-area-inset-top) + 8px);
+    right: 16px;
+    background: #1e293b;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+    width: 210px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-8px) scale(0.97);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 100;
+    overflow: hidden;
+}
+
+.nav-dropdown.open {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0) scale(1);
+}
+
+.nav-dropdown-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+}
+
+.nav-dropdown-avatar-btn {
+    font-size: 26px;
+    background: rgba(255, 255, 255, 0.08);
+    border: none;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
     cursor: pointer;
-    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.nav-dropdown-avatar-btn:hover {
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.nav-dropdown-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.nav-logout-btn:hover {
+.nav-dropdown-divider {
+    height: 1px;
     background: rgba(255, 255, 255, 0.08);
+    margin: 0 12px;
+}
+
+.nav-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px 16px;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s;
+    font-family: inherit;
+}
+
+.nav-dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.07);
     color: #fff;
 }
 
-@media (max-width: 480px) {
-    .nav-user-email { display: none; }
+.nav-dropdown-item:last-child {
+    margin-bottom: 6px;
+}
+
+.nav-dropdown-item--danger { color: #f87171; }
+.nav-dropdown-item--danger:hover {
+    background: rgba(248, 113, 113, 0.1);
+    color: #fca5a5;
+}
+
+/* ── Avatar picker ── */
+.avatar-picker {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 6px;
+    padding: 8px;
+}
+
+.avatar-option {
+    font-size: 26px;
+    background: none;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    aspect-ratio: 1;
+    line-height: 1;
+}
+
+.avatar-option:hover {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: #6366f1;
+    transform: scale(1.1);
+}
+
+/* ── Progress stats ── */
+.progress-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 8px;
+}
+
+.progress-stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.progress-stat-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.progress-stat-rate {
+    font-size: 14px;
+    font-weight: 700;
+    color: #6366f1;
+}
+
+.progress-bar-track {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    border-radius: 3px;
+    transition: width 0.6s ease;
+}
+
+.progress-stat-counts {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.35);
+    margin-top: 5px;
+}
+
+.progress-empty {
+    color: rgba(255, 255, 255, 0.4);
+    text-align: center;
+    padding: 24px;
+    font-size: 14px;
 }
 
 /* ── Auth modal ── */
