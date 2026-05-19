@@ -306,5 +306,17 @@ export function initAuth() {
         }
     });
 
+    // Синхронизируем аватарку с сервером при старте
+    if (isLoggedIn() && !isLocalToken()) {
+        fetch(`${API_URL}/api/user/me`, {
+            headers: { 'Authorization': `Bearer ${getToken()}` },
+        }).then(r => r.json()).then(data => {
+            if (data.avatar) {
+                localStorage.setItem(AVATAR_KEY, data.avatar);
+                updateNavbar();
+            }
+        }).catch(() => {});
+    }
+
     updateNavbar();
 }
