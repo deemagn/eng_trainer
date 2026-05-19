@@ -2,6 +2,7 @@ import { variants }            from '../data/tasks/grammar-context-present.js';
 import { barcelonaTask, newApartmentTask } from '../data/tasks/text-fill-present.js';
 import { initGrammarContextTask } from './tasks/grammar-context.js';
 import { initTextFillTask }       from './tasks/text-fill.js';
+import { saveTaskProgress, fetchCompletedTasks } from './api.js';
 
 const taskGroups = [
     {
@@ -11,7 +12,7 @@ const taskGroups = [
         variants:    variants.map((v, i) => ({
             id:    `grammar-context-${i + 1}`,
             label: `${i + 1}`,
-            init:  (container) => initGrammarContextTask(container, v.sentences),
+            init:  (container, onComplete) => initGrammarContextTask(container, v.sentences, onComplete),
         })),
     },
     {
@@ -19,8 +20,8 @@ const taskGroups = [
         title:       '✍️ Текст с применением времён Present',
         description: 'Вставь правильную форму глагола',
         variants: [
-            { id: 'text-fill-1', label: '1', init: (c) => initTextFillTask(c, barcelonaTask) },
-            { id: 'text-fill-2', label: '2', init: (c) => initTextFillTask(c, newApartmentTask) },
+            { id: 'text-fill-1', label: '1', init: (c, cb) => initTextFillTask(c, barcelonaTask, cb) },
+            { id: 'text-fill-2', label: '2', init: (c, cb) => initTextFillTask(c, newApartmentTask, cb) },
         ],
     },
     {
@@ -47,7 +48,7 @@ taskGroups.forEach(g => {
     }
 });
 
-export function initTasks(switchPage) {
+export async function initTasks(switchPage) {
     const listEl      = document.getElementById('tasks-list');
     const viewContent = document.getElementById('task-view-content');
     const backBtn     = document.getElementById('task-back-btn');
@@ -77,9 +78,19 @@ export function initTasks(switchPage) {
             </div>`;
     }).join('');
 
+    function markCompleted(variantId) {
+        const pill = listEl.querySelector(`.variant-pill[data-id="${variantId}"]`);
+        if (pill) pill.classList.add('completed');
+    }
+
+    async function onTaskComplete(variantId) {
+        await saveTaskProgress(variantId);
+        markCompleted(variantId);
+    }
+
     function openTask(item) {
         viewContent.innerHTML = '';
-        item.init(viewContent);
+        item.init(viewContent, () => onTaskComplete(item.id));
         switchPage('task-view');
         document.querySelector('[data-page="tasks"]')?.classList.add('active');
     }
@@ -93,4 +104,9 @@ export function initTasks(switchPage) {
     });
 
     backBtn.addEventListener('click', () => switchPage('tasks'));
+
+    // Подсветить завершённые задания
+    fetchCompletedTasks().then(completed => {
+        completed.forEach(id => markCompleted(id));
+    });
 }

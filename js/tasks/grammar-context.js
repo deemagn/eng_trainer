@@ -9,7 +9,7 @@ function shuffle(arr) {
     return a;
 }
 
-export function initGrammarContextTask(container, rawSentences) {
+export function initGrammarContextTask(container, rawSentences, onComplete) {
     const sentences = shuffle(rawSentences);
 
     const state = {
@@ -91,6 +91,7 @@ export function initGrammarContextTask(container, rawSentences) {
             });
             setTimeout(() => {
                 state.answers[state.current] = contextId;
+                if (Object.keys(state.answers).length === sentences.length) onComplete?.();
                 render();
                 requestAnimationFrame(() => {
                     optionsEl.querySelector('.correct')?.classList.add('arrived');

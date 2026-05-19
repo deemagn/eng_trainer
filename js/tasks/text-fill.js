@@ -1,4 +1,4 @@
-export function initTextFillTask(container, task) {
+export function initTextFillTask(container, task, onComplete) {
     const totalBlanks = Object.keys(task.answers).length;
     const correct     = new Set();
 
@@ -45,6 +45,7 @@ export function initTextFillTask(container, task) {
             input.disabled = true;
             correct.add(id);
             updateProgress();
+            if (correct.size === totalBlanks) onComplete?.();
             const next = allInputs.find(i => !i.disabled);
             if (next) next.focus();
         } else {
