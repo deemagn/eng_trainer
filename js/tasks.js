@@ -9,14 +9,14 @@ const taskGroups = [
         type:        'grammar-context',
         title:       '🎯 Выбрать контекст для времён Present',
         description: '10 предложений — определи контекст',
-        prefix:      'grammar-context-present',
+        prefix:      'grammar-context',
         data:        grammarContextPresent,
     },
     {
         type:        'text-fill',
         title:       '✍️ Текст с применением времён Present',
         description: 'Вставь правильную форму глагола',
-        prefix:      'text-fill-present',
+        prefix:      'text-fill',
         data:        textFillTasks,
     },
     {
