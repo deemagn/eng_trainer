@@ -11,7 +11,9 @@ const ANIMALS = [
 ];
 
 function getToken()          { return localStorage.getItem(TOKEN_KEY); }
-function getStoredUsername() { return localStorage.getItem(USERNAME_KEY); }
+function getStoredUsername() {
+    return localStorage.getItem(USERNAME_KEY) || localStorage.getItem('et_email') || '';
+}
 
 function saveAuth(token, username) {
     localStorage.setItem(TOKEN_KEY, token);
