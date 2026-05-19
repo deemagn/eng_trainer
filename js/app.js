@@ -116,7 +116,27 @@ function switchPage(pageId) {
     document.querySelector(`[data-page="${pageId}"]`)?.classList.add('active');
 }
 
-navTabs.forEach(tab => tab.addEventListener('click', () => switchPage(tab.dataset.page)));
+const navTabsContainer = document.getElementById('nav-tabs');
+const navBurger = document.getElementById('nav-burger');
+
+navBurger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    navBurger.classList.toggle('open');
+    navTabsContainer.classList.toggle('mobile-open');
+});
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('#nav-tabs') && !e.target.closest('#nav-burger')) {
+        navBurger.classList.remove('open');
+        navTabsContainer.classList.remove('mobile-open');
+    }
+});
+
+navTabs.forEach(tab => tab.addEventListener('click', () => {
+    switchPage(tab.dataset.page);
+    navBurger.classList.remove('open');
+    navTabsContainer.classList.remove('mobile-open');
+}));
 
 // ── Keyboard shortcuts ────────────────────────────────────
 
