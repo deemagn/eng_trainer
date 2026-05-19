@@ -129,9 +129,9 @@ body {
 .nav-user {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     cursor: pointer;
-    padding: 5px 12px 5px 5px;
+    padding: 6px 8px 6px 14px;
     border-radius: 50px;
     border: 1px solid rgba(255, 255, 255, 0.15);
     transition: background 0.2s;
@@ -144,20 +144,21 @@ body {
 }
 
 .nav-avatar {
-    font-size: 20px;
-    width: 30px;
-    height: 30px;
+    font-size: 22px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
     line-height: 1;
+    flex-shrink: 0;
 }
 
 .nav-username {
-    font-size: 13px;
+    font-size: 17px;
     font-weight: 700;
     color: #fff;
-    max-width: 90px;
+    max-width: 100px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
