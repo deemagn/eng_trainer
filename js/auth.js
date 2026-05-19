@@ -80,9 +80,15 @@ async function fetchProgress() {
 }
 
 function openModal(title, bodyHTML) {
+    const overlay = document.getElementById('modal-overlay');
     document.getElementById('modal-title').textContent = title;
     document.getElementById('modal-body').innerHTML = bodyHTML;
-    document.getElementById('modal-overlay').classList.add('open');
+    overlay.classList.add('open', 'modal-centered');
+}
+
+function closeModal() {
+    const overlay = document.getElementById('modal-overlay');
+    overlay.classList.remove('open', 'modal-centered');
 }
 
 async function openProgressModal() {
@@ -125,7 +131,7 @@ function openAvatarPicker() {
     document.querySelectorAll('.avatar-option').forEach(btn => {
         btn.addEventListener('click', () => {
             setAvatar(btn.dataset.emoji);
-            document.getElementById('modal-overlay').classList.remove('open');
+            closeModal();
             updateNavbar();
         });
     });

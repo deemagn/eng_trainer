@@ -762,6 +762,21 @@ body {
     pointer-events: all;
 }
 
+.modal-overlay.modal-centered {
+    align-items: center;
+    padding: 24px;
+}
+
+.modal-overlay.modal-centered .modal {
+    border-radius: 24px;
+    max-width: 480px;
+    transform: translateY(20px) scale(0.97);
+}
+
+.modal-overlay.modal-centered.open .modal {
+    transform: translateY(0) scale(1);
+}
+
 .modal {
     background: #1e293b;
     border-radius: 24px 24px 0 0;
