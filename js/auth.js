@@ -1,4 +1,4 @@
-const API_URL = 'https://api.goodnewsenglish.com';
+const API_URL      = 'https://api.goodnewsenglish.com';
 const TOKEN_KEY    = 'et_token';
 const USERNAME_KEY = 'et_username';
 const AVATAR_KEY   = 'et_avatar';
@@ -14,10 +14,15 @@ function getToken()          { return localStorage.getItem(TOKEN_KEY); }
 function getStoredUsername() {
     return localStorage.getItem(USERNAME_KEY) || localStorage.getItem('et_email') || '';
 }
+function isLocalToken() {
+    const t = getToken();
+    return !t || t.startsWith('local.');
+}
 
-function saveAuth(token, username) {
+function saveAuth(token, username, avatar = '') {
     localStorage.setItem(TOKEN_KEY, token);
     localStorage.setItem(USERNAME_KEY, username);
+    if (avatar) localStorage.setItem(AVATAR_KEY, avatar);
 }
 
 export function clearAuth() {
@@ -48,8 +53,50 @@ function getAvatar() {
     return localStorage.getItem(AVATAR_KEY) || defaultAvatar(getStoredUsername() || '');
 }
 
-function setAvatar(emoji) {
-    localStorage.setItem(AVATAR_KEY, emoji);
+function setAvatar(value) {
+    localStorage.setItem(AVATAR_KEY, value);
+}
+
+function renderAvatar(avatar) {
+    if (avatar.startsWith('data:')) {
+        return `<img src="${avatar}" class="avatar-img" alt="">`;
+    }
+    return avatar;
+}
+
+async function compressImage(file) {
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const size = 200;
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+                const min = Math.min(img.width, img.height);
+                const sx = (img.width - min) / 2;
+                const sy = (img.height - min) / 2;
+                ctx.drawImage(img, sx, sy, min, min, 0, 0, size, size);
+                resolve(canvas.toDataURL('image/jpeg', 0.82));
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+async function saveAvatarToServer(value) {
+    if (isLocalToken()) return;
+    await fetch(`${API_URL}/api/user/avatar`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getToken()}`,
+        },
+        body: JSON.stringify({ avatar: value }),
+    }).catch(() => {});
 }
 
 function createLocalToken() {
@@ -123,14 +170,35 @@ async function openProgressModal() {
 
 function openAvatarPicker() {
     document.getElementById('nav-dropdown')?.classList.remove('open');
-    openModal('Выбери аватарку', `
+    openModal('Аватарка', `
+        <div class="avatar-upload-section">
+            <label class="avatar-upload-btn" id="avatar-upload-label">
+                📷 Загрузить фото
+                <input type="file" id="avatar-file-input" accept="image/*" style="display:none">
+            </label>
+        </div>
+        <div class="avatar-picker-divider">или выбери эмодзи</div>
         <div class="avatar-picker">
             ${ANIMALS.map(e => `<button class="avatar-option" data-emoji="${e}">${e}</button>`).join('')}
         </div>
     `);
+
+    document.getElementById('avatar-file-input').addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const label = document.getElementById('avatar-upload-label');
+        label.textContent = 'Загрузка...';
+        const base64 = await compressImage(file);
+        setAvatar(base64);
+        await saveAvatarToServer(base64);
+        closeModal();
+        updateNavbar();
+    });
+
     document.querySelectorAll('.avatar-option').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', async () => {
             setAvatar(btn.dataset.emoji);
+            await saveAvatarToServer(btn.dataset.emoji);
             closeModal();
             updateNavbar();
         });
@@ -142,14 +210,15 @@ export function updateNavbar() {
     if (isLoggedIn()) {
         const username = getStoredUsername() || '';
         const avatar   = getAvatar();
+        const avatarHTML = renderAvatar(avatar);
         nav.innerHTML = `
             <div class="nav-user" id="nav-user">
-                <span class="nav-avatar">${avatar}</span>
                 <span class="nav-username">${username}</span>
+                <span class="nav-avatar">${avatarHTML}</span>
             </div>
             <div class="nav-dropdown" id="nav-dropdown">
                 <div class="nav-dropdown-top">
-                    <button class="nav-dropdown-avatar-btn" id="nav-dropdown-avatar-btn" title="Сменить аватарку">${avatar}</button>
+                    <button class="nav-dropdown-avatar-btn" id="nav-dropdown-avatar-btn" title="Сменить аватарку">${avatarHTML}</button>
                     <span class="nav-dropdown-name">${username}</span>
                 </div>
                 <div class="nav-dropdown-divider"></div>
@@ -226,8 +295,8 @@ export function initAuth() {
                 return;
             }
             const path = mode === 'login' ? '/api/auth/login' : '/api/auth/register';
-            const { token } = await apiPost(path, { username, password });
-            saveAuth(token, username);
+            const { token, avatar } = await apiPost(path, { username, password });
+            saveAuth(token, username, avatar);
             overlay.classList.remove('open');
             updateNavbar();
         } catch (err) {
