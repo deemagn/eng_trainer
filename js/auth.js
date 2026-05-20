@@ -64,26 +64,76 @@ function renderAvatar(avatar) {
     return avatar;
 }
 
-async function compressImage(file) {
-    return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = new Image();
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                const size = 200;
-                canvas.width = size;
-                canvas.height = size;
-                const ctx = canvas.getContext('2d');
-                const min = Math.min(img.width, img.height);
-                const sx = (img.width - min) / 2;
-                const sy = (img.height - min) / 2;
-                ctx.drawImage(img, sx, sy, min, min, 0, 0, size, size);
-                resolve(canvas.toDataURL('image/jpeg', 0.82));
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
+async function openCropModal(file) {
+    const objectUrl = URL.createObjectURL(file);
+    const VP = 240;
+
+    openModal('Выбери область', `
+        <div class="crop-wrap">
+            <div class="crop-viewport" id="crop-viewport">
+                <img id="crop-img" src="${objectUrl}" draggable="false">
+            </div>
+            <p class="crop-hint">Перетащи фото чтобы выбрать область</p>
+            <button class="auth-submit" id="crop-confirm">Применить</button>
+        </div>
+    `);
+
+    const viewport = document.getElementById('crop-viewport');
+    const img      = document.getElementById('crop-img');
+
+    await new Promise(resolve => img.addEventListener('load', resolve, { once: true }));
+
+    const scale  = VP / Math.min(img.naturalWidth, img.naturalHeight);
+    const dispW  = img.naturalWidth  * scale;
+    const dispH  = img.naturalHeight * scale;
+    img.style.width  = dispW + 'px';
+    img.style.height = dispH + 'px';
+
+    let x = (VP - dispW) / 2;
+    let y = (VP - dispH) / 2;
+
+    function clamp(v, mn, mx) { return Math.max(mn, Math.min(mx, v)); }
+    function setPos(nx, ny) {
+        x = clamp(nx, VP - dispW, 0);
+        y = clamp(ny, VP - dispH, 0);
+        img.style.transform = `translate(${x}px, ${y}px)`;
+    }
+    setPos(x, y);
+
+    let dragging = false, sx, sy, ix, iy;
+
+    viewport.addEventListener('mousedown', (e) => {
+        dragging = true; sx = e.clientX; sy = e.clientY; ix = x; iy = y;
+        e.preventDefault();
+    });
+    window.addEventListener('mousemove', (e) => {
+        if (dragging) setPos(ix + e.clientX - sx, iy + e.clientY - sy);
+    });
+    window.addEventListener('mouseup', () => { dragging = false; });
+
+    viewport.addEventListener('touchstart', (e) => {
+        const t = e.touches[0];
+        dragging = true; sx = t.clientX; sy = t.clientY; ix = x; iy = y;
+        e.preventDefault();
+    }, { passive: false });
+    window.addEventListener('touchmove', (e) => {
+        if (!dragging) return;
+        const t = e.touches[0];
+        setPos(ix + t.clientX - sx, iy + t.clientY - sy);
+    });
+    window.addEventListener('touchend', () => { dragging = false; });
+
+    document.getElementById('crop-confirm').addEventListener('click', () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = canvas.height = 200;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, -x / scale, -y / scale, VP / scale, VP / scale, 0, 0, 200, 200);
+        const base64 = canvas.toDataURL('image/jpeg', 0.82);
+        URL.revokeObjectURL(objectUrl);
+        setAvatar(base64);
+        saveAvatarToServer(base64);
+        closeModal();
+        updateNavbar();
     });
 }
 
@@ -186,13 +236,7 @@ function openAvatarPicker() {
     document.getElementById('avatar-file-input').addEventListener('change', async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-        const label = document.getElementById('avatar-upload-label');
-        label.textContent = 'Загрузка...';
-        const base64 = await compressImage(file);
-        setAvatar(base64);
-        await saveAvatarToServer(base64);
-        closeModal();
-        updateNavbar();
+        await openCropModal(file);
     });
 
     document.querySelectorAll('.avatar-option').forEach(btn => {

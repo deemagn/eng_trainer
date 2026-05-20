@@ -309,6 +309,45 @@ body {
     color: #fff;
 }
 
+/* ── Crop modal ── */
+.crop-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 8px;
+}
+
+.crop-viewport {
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+    cursor: grab;
+    border: 3px solid #6366f1;
+    flex-shrink: 0;
+    user-select: none;
+    touch-action: none;
+}
+
+.crop-viewport:active { cursor: grabbing; }
+
+#crop-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.crop-hint {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.4);
+    text-align: center;
+}
+
 .avatar-picker-divider {
     text-align: center;
     font-size: 12px;
