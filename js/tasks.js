@@ -1,5 +1,6 @@
 import { variants as grammarContextPresent } from '../data/tasks/grammar-context-present.js';
 import { textFillTasks }                    from '../data/tasks/text-fill-present.js';
+import { textFillStativeTasks }             from '../data/tasks/text-fill-stative.js';
 import { initGrammarContextTask } from './tasks/grammar-context.js';
 import { initTextFillTask }       from './tasks/text-fill.js';
 import { saveTaskProgress, fetchCompletedTasks } from './api.js';
@@ -18,6 +19,13 @@ const taskGroups = [
         description: 'Вставь правильную форму глагола',
         prefix:      'text-fill',
         data:        textFillTasks,
+    },
+    {
+        type:        'text-fill',
+        title:       '✍️ Применение Stative Verbs',
+        description: 'Вставь правильную форму глагола',
+        prefix:      'text-fill-stative',
+        data:        textFillStativeTasks,
     },
     {
         type:        'grammar-context',
