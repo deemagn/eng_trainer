@@ -681,6 +681,22 @@ body {
     border-color: rgba(255, 255, 255, 0.3);
 }
 
+/* ── Cards empty state ── */
+.cards-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+}
+
+.cards-empty-text {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.35);
+    text-align: center;
+    line-height: 1.6;
+    max-width: 260px;
+}
+
 /* ── Card ── */
 .card-container {
     perspective: 1200px;

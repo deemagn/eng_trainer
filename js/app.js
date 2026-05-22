@@ -51,6 +51,8 @@ const btnMarkers   = document.getElementById('btn-markers');
 const btnNext          = document.getElementById('btn-next-item');
 const btnLearnedAction = document.getElementById('btn-learned-action');
 const btnShowList      = document.getElementById('btn-show-list');
+const cardsEmpty       = document.getElementById('cards-empty');
+const cardsEmptyText   = document.getElementById('cards-empty-text');
 const modalOverlay = document.getElementById('modal-overlay');
 const modalTitle   = document.getElementById('modal-title');
 const modalBody    = document.getElementById('modal-body');
@@ -95,20 +97,36 @@ function updateLearnedBtn() {
     }
 }
 
+function setEmptyState(msg) {
+    cardsEmpty.style.display = '';
+    cardsEmptyText.textContent = msg;
+    cardWrapper.style.display = 'none';
+    btnNext.style.display = 'none';
+    btnLearnedAction.style.display = 'none';
+    btnShowList.style.display = 'none';
+    subtitle.textContent = '';
+    counter.textContent = '';
+}
+
+function clearEmptyState() {
+    cardsEmpty.style.display = 'none';
+    cardWrapper.style.display = '';
+    btnNext.style.display = '';
+    btnShowList.style.display = '';
+}
+
 function updateUI() {
     const data = getCurrentDataset();
 
     if (data.length === 0) {
-        cardWrapper.classList.remove('switching');
-        cardElement.classList.remove('is-flipped');
         const msg = verbFilter === 'learned'
-            ? 'Нет выученных глаголов' : 'Все глаголы выучены!';
-        subtitle.textContent = msg;
-        counter.textContent = '';
-        btnLearnedAction.style.display = 'none';
+            ? 'Выученных глаголов пока нет — нажми «✓ Выучено» на карточке'
+            : 'Все глаголы выучены!';
+        setEmptyState(msg);
         return;
     }
 
+    clearEmptyState();
     cardWrapper.classList.add('switching');
     cardElement.classList.remove('is-flipped');
 
