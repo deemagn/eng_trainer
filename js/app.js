@@ -53,6 +53,7 @@ const btnLearnedAction = document.getElementById('btn-learned-action');
 const btnShowList      = document.getElementById('btn-show-list');
 const cardsEmpty       = document.getElementById('cards-empty');
 const cardsEmptyText   = document.getElementById('cards-empty-text');
+const learnedList      = document.getElementById('learned-list');
 const modalOverlay = document.getElementById('modal-overlay');
 const modalTitle   = document.getElementById('modal-title');
 const modalBody    = document.getElementById('modal-body');
@@ -97,7 +98,42 @@ function updateLearnedBtn() {
     }
 }
 
+function renderLearnedList(data) {
+    cardsEmpty.style.display    = 'none';
+    cardWrapper.style.display   = 'none';
+    btnNext.style.display       = 'none';
+    btnLearnedAction.style.display = 'none';
+    btnShowList.style.display   = 'none';
+    counter.textContent         = '';
+    subtitle.textContent        = `Выучено: ${data.length} глаголов`;
+
+    learnedList.style.display = '';
+    learnedList.innerHTML = data.map(v => {
+        const hasDistinctV3 = v.v3 && v.v3 !== v.past;
+        const forms = hasDistinctV3
+            ? `<span class="ll-forms">V2: <b>${v.past}</b> &nbsp; V3: <b>${v.v3}</b></span>`
+            : `<span class="ll-forms">Past/V3: <b>${v.past}</b></span>`;
+        return `
+            <div class="ll-row">
+                <span class="ll-en">${v.en}</span>
+                <span class="ll-ru">${v.ru}</span>
+                ${forms}
+                <button class="ll-return-btn" data-en="${v.en}">Вернуть</button>
+            </div>`;
+    }).join('');
+
+    learnedList.querySelectorAll('.ll-return-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            await removeLearnedWord('verbs', btn.dataset.en);
+            learnedVerbs.delete(btn.dataset.en);
+            updateSubtitle();
+            updateUI();
+        });
+    });
+}
+
 function setEmptyState(msg) {
+    learnedList.style.display = 'none';
     cardsEmpty.style.display = '';
     cardsEmptyText.textContent = msg;
     cardWrapper.style.display = 'none';
@@ -109,6 +145,7 @@ function setEmptyState(msg) {
 }
 
 function clearEmptyState() {
+    learnedList.style.display = 'none';
     cardsEmpty.style.display = 'none';
     cardWrapper.style.display = '';
     btnNext.style.display = '';
@@ -118,11 +155,17 @@ function clearEmptyState() {
 function updateUI() {
     const data = getCurrentDataset();
 
+    if (verbFilter === 'learned') {
+        if (data.length === 0) {
+            setEmptyState('Выученных глаголов пока нет — нажми «✓ Выучено» на карточке');
+        } else {
+            renderLearnedList(data);
+        }
+        return;
+    }
+
     if (data.length === 0) {
-        const msg = verbFilter === 'learned'
-            ? 'Выученных глаголов пока нет — нажми «✓ Выучено» на карточке'
-            : 'Все глаголы выучены!';
-        setEmptyState(msg);
+        setEmptyState('Все глаголы выучены!');
         return;
     }
 
