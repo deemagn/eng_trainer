@@ -5,14 +5,31 @@ import { initDialogues } from './dialogues.js';
 import { initTasks }    from './tasks.js';
 import { initAuth }     from './auth.js';
 
-const hardVerbs    = verbs.filter(v => v.is_hard);
-const datasets     = { verbs, hard: hardVerbs, phrases, markers };
-const labels       = { verbs: 'Глагол', hard: 'Сложный глагол', phrases: 'Фраза', markers: 'Маркер' };
-const counts       = { verbs: 'глаголов', hard: 'глаголов', phrases: 'фраз', markers: 'маркеров' };
-const modalTitles  = { verbs: 'Глаголы', hard: 'Сложные глаголы', phrases: 'Фразы', markers: 'Маркеры' };
+function isIrregular(verb) {
+    const en   = verb.en.toLowerCase();
+    const past = verb.past.split('/')[0].toLowerCase();
+    if (past === en + 'ed') return false;
+    if (past === en + 'd') return false;
+    if (en.endsWith('e') && past === en.slice(0, -1) + 'ed') return false;
+    if (en.endsWith('y') && !['ay','ey','oy','uy'].some(s => en.endsWith(s)) && past === en.slice(0,-1) + 'ied') return false;
+    if (past === en + en[en.length - 1] + 'ed') return false;
+    return true;
+}
 
-let currentMode = 'verbs';
-let sessionCount = 0;
+const irregularVerbs = verbs.filter(isIrregular);
+const labels      = { verbs: 'Глагол', phrases: 'Фраза', markers: 'Маркер' };
+const counts      = { verbs: 'глаголов', phrases: 'фраз', markers: 'маркеров' };
+const modalTitles = { verbs: 'Глаголы', phrases: 'Фразы', markers: 'Маркеры' };
+
+let currentMode   = 'verbs';
+let verbFilter    = 'all'; // 'all' | 'irregular'
+let sessionCount  = 0;
+
+function getCurrentDataset() {
+    if (currentMode === 'verbs') return verbFilter === 'irregular' ? irregularVerbs : verbs;
+    if (currentMode === 'phrases') return phrases;
+    return markers;
+}
 
 const cardWrapper  = document.getElementById('card-wrapper');
 const cardElement  = document.getElementById('card-element');
@@ -22,7 +39,6 @@ const cardBadge    = document.getElementById('card-badge');
 const counter      = document.getElementById('counter');
 const subtitle     = document.getElementById('subtitle');
 const btnVerbs     = document.getElementById('btn-verbs');
-const btnHard      = document.getElementById('btn-hard');
 const btnPhrases   = document.getElementById('btn-phrases');
 const btnMarkers   = document.getElementById('btn-markers');
 const btnNext      = document.getElementById('btn-next-item');
@@ -31,12 +47,29 @@ const modalOverlay = document.getElementById('modal-overlay');
 const modalTitle   = document.getElementById('modal-title');
 const modalBody    = document.getElementById('modal-body');
 const modalClose   = document.getElementById('modal-close');
+const verbFilterEl = document.getElementById('verb-filter');
 
 // ── Cards page ────────────────────────────────────────────
 
 function updateSubtitle() {
-    const data = datasets[currentMode];
+    const data = getCurrentDataset();
     subtitle.textContent = `${data.length} ${counts[currentMode]} в наборе`;
+}
+
+function verbBackHTML(item, isEnglishFirst) {
+    const hasDistinctV3 = item.v3 && item.v3 !== item.past;
+    const formsHTML = hasDistinctV3
+        ? `<p>Past (V2): <b>${item.past}</b></p><p>V3: <b>${item.v3}</b></p>`
+        : `<p>Past/V3: <b>${item.past}</b></p>`;
+
+    if (isEnglishFirst) {
+        return `<h2>${item.ru}</h2>
+            <div class="grammar">
+                <p>Infinitive: <b>${item.en}</b></p>
+                ${formsHTML}
+            </div>`;
+    }
+    return `<h2>${item.en}</h2><div class="grammar">${formsHTML}</div>`;
 }
 
 function updateUI() {
@@ -44,7 +77,7 @@ function updateUI() {
     cardElement.classList.remove('is-flipped');
 
     setTimeout(() => {
-        const data = datasets[currentMode];
+        const data = getCurrentDataset();
         const item = data[Math.floor(Math.random() * data.length)];
         const isEnglishFirst = Math.random() > 0.5;
 
@@ -55,19 +88,8 @@ function updateUI() {
 
         if (currentMode === 'phrases' || currentMode === 'markers') {
             textBack.innerHTML = `<h2>${isEnglishFirst ? item.ru : item.en}</h2>`;
-        } else if (isEnglishFirst) {
-            textBack.innerHTML = `
-                <h2>${item.ru}</h2>
-                <div class="grammar">
-                    <p>Infinitive: <b>${item.en}</b></p>
-                    <p>Past: <b>${item.past}</b></p>
-                </div>`;
         } else {
-            textBack.innerHTML = `
-                <h2>${item.en}</h2>
-                <div class="grammar">
-                    <p>Past: <b>${item.past}</b></p>
-                </div>`;
+            textBack.innerHTML = verbBackHTML(item, isEnglishFirst);
         }
 
         cardWrapper.classList.remove('switching');
@@ -78,8 +100,9 @@ function handleTabClick(mode, activeBtn) {
     if (currentMode === mode) return;
     currentMode = mode;
     sessionCount = 0;
-    [btnVerbs, btnHard, btnPhrases, btnMarkers].forEach(btn => btn.classList.remove('active'));
+    [btnVerbs, btnPhrases, btnMarkers].forEach(btn => btn.classList.remove('active'));
     activeBtn.classList.add('active');
+    verbFilterEl.style.display = mode === 'verbs' ? 'flex' : 'none';
     updateSubtitle();
     updateUI();
 }
@@ -87,8 +110,8 @@ function handleTabClick(mode, activeBtn) {
 // ── Modal ─────────────────────────────────────────────────
 
 function openList() {
-    const data = datasets[currentMode];
-    const isVerbs = currentMode !== 'phrases' && currentMode !== 'markers';
+    const data = getCurrentDataset();
+    const isVerbs = currentMode === 'verbs';
     modalTitle.textContent = `${modalTitles[currentMode]} — ${data.length} ${counts[currentMode]}`;
     modalBody.innerHTML = data.map(item => `
         <div class="list-item">
@@ -160,13 +183,23 @@ document.addEventListener('keydown', (e) => {
 
 cardWrapper.addEventListener('click',   () => cardElement.classList.toggle('is-flipped'));
 btnVerbs.addEventListener('click',      () => handleTabClick('verbs',   btnVerbs));
-btnHard.addEventListener('click',       () => handleTabClick('hard',    btnHard));
 btnPhrases.addEventListener('click',    () => handleTabClick('phrases', btnPhrases));
 btnMarkers.addEventListener('click',    () => handleTabClick('markers', btnMarkers));
 btnNext.addEventListener('click', updateUI);
 btnShowList.addEventListener('click', openList);
 modalClose.addEventListener('click', closeList);
 modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeList(); });
+
+verbFilterEl.querySelectorAll('.verb-filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        verbFilter = btn.dataset.filter;
+        verbFilterEl.querySelectorAll('.verb-filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        sessionCount = 0;
+        updateSubtitle();
+        updateUI();
+    });
+});
 
 // ── Init ──────────────────────────────────────────────────
 
