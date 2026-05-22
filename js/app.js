@@ -4,6 +4,7 @@ import { markers } from '../data/markers.js';
 import { initDialogues } from './dialogues.js';
 import { initTasks }    from './tasks.js';
 import { initAuth }     from './auth.js';
+import { fetchLearnedWords, addLearnedWord, removeLearnedWord } from './api.js';
 
 function isIrregular(verb) {
     const en   = verb.en.toLowerCase();
@@ -22,11 +23,17 @@ const counts      = { verbs: 'глаголов', phrases: 'фраз', markers: '
 const modalTitles = { verbs: 'Глаголы', phrases: 'Фразы', markers: 'Маркеры' };
 
 let currentMode   = 'verbs';
-let verbFilter    = 'all'; // 'all' | 'irregular'
+let verbFilter    = 'all'; // 'all' | 'irregular' | 'learned'
 let sessionCount  = 0;
+let currentItem   = null;
+let learnedVerbs  = new Set();
 
 function getCurrentDataset() {
-    if (currentMode === 'verbs') return verbFilter === 'irregular' ? irregularVerbs : verbs;
+    if (currentMode === 'verbs') {
+        if (verbFilter === 'learned')   return verbs.filter(v => learnedVerbs.has(v.en));
+        const base = verbFilter === 'irregular' ? irregularVerbs : verbs;
+        return base.filter(v => !learnedVerbs.has(v.en));
+    }
     if (currentMode === 'phrases') return phrases;
     return markers;
 }
@@ -41,8 +48,9 @@ const subtitle     = document.getElementById('subtitle');
 const btnVerbs     = document.getElementById('btn-verbs');
 const btnPhrases   = document.getElementById('btn-phrases');
 const btnMarkers   = document.getElementById('btn-markers');
-const btnNext      = document.getElementById('btn-next-item');
-const btnShowList  = document.getElementById('btn-show-list');
+const btnNext          = document.getElementById('btn-next-item');
+const btnLearnedAction = document.getElementById('btn-learned-action');
+const btnShowList      = document.getElementById('btn-show-list');
 const modalOverlay = document.getElementById('modal-overlay');
 const modalTitle   = document.getElementById('modal-title');
 const modalBody    = document.getElementById('modal-body');
@@ -72,15 +80,43 @@ function verbBackHTML(item, isEnglishFirst) {
     return `<h2>${item.en}</h2><div class="grammar">${formsHTML}</div>`;
 }
 
+function updateLearnedBtn() {
+    if (currentMode !== 'verbs' || !currentItem) {
+        btnLearnedAction.style.display = 'none';
+        return;
+    }
+    btnLearnedAction.style.display = '';
+    if (verbFilter === 'learned') {
+        btnLearnedAction.textContent = 'Вернуть';
+        btnLearnedAction.className = 'btn-return';
+    } else {
+        btnLearnedAction.textContent = '✓ Выучено';
+        btnLearnedAction.className = 'btn-learned-action';
+    }
+}
+
 function updateUI() {
+    const data = getCurrentDataset();
+
+    if (data.length === 0) {
+        cardWrapper.classList.remove('switching');
+        cardElement.classList.remove('is-flipped');
+        const msg = verbFilter === 'learned'
+            ? 'Нет выученных глаголов' : 'Все глаголы выучены!';
+        subtitle.textContent = msg;
+        counter.textContent = '';
+        btnLearnedAction.style.display = 'none';
+        return;
+    }
+
     cardWrapper.classList.add('switching');
     cardElement.classList.remove('is-flipped');
 
     setTimeout(() => {
-        const data = getCurrentDataset();
         const item = data[Math.floor(Math.random() * data.length)];
         const isEnglishFirst = Math.random() > 0.5;
 
+        currentItem = item;
         sessionCount++;
         counter.textContent = `показано за сессию: ${sessionCount}`;
         cardBadge.textContent = labels[currentMode];
@@ -93,6 +129,7 @@ function updateUI() {
         }
 
         cardWrapper.classList.remove('switching');
+        updateLearnedBtn();
     }, 300);
 }
 
@@ -100,9 +137,11 @@ function handleTabClick(mode, activeBtn) {
     if (currentMode === mode) return;
     currentMode = mode;
     sessionCount = 0;
+    currentItem = null;
     [btnVerbs, btnPhrases, btnMarkers].forEach(btn => btn.classList.remove('active'));
     activeBtn.classList.add('active');
     verbFilterEl.style.display = mode === 'verbs' ? 'flex' : 'none';
+    if (mode !== 'verbs') btnLearnedAction.style.display = 'none';
     updateSubtitle();
     updateUI();
 }
@@ -196,12 +235,32 @@ verbFilterEl.querySelectorAll('.verb-filter-btn').forEach(btn => {
         verbFilterEl.querySelectorAll('.verb-filter-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         sessionCount = 0;
+        currentItem = null;
         updateSubtitle();
         updateUI();
     });
 });
 
+btnLearnedAction.addEventListener('click', async () => {
+    if (!currentItem) return;
+    if (verbFilter === 'learned') {
+        await removeLearnedWord('verbs', currentItem.en);
+        learnedVerbs.delete(currentItem.en);
+    } else {
+        await addLearnedWord('verbs', currentItem.en);
+        learnedVerbs.add(currentItem.en);
+    }
+    sessionCount = 0;
+    updateSubtitle();
+    updateUI();
+});
+
 // ── Init ──────────────────────────────────────────────────
+
+fetchLearnedWords('verbs').then(set => {
+    learnedVerbs = set;
+    updateUI();
+});
 
 updateSubtitle();
 updateUI();

@@ -844,6 +844,47 @@ body {
     box-shadow: 0 6px 18px rgba(99, 102, 241, 0.4);
 }
 
+/* ── Learned / Return buttons ── */
+.btn-learned-action {
+    margin-top: 12px;
+    padding: 14px 48px;
+    font-size: 16px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 8px 28px rgba(34, 197, 94, 0.4);
+    transition: all 0.2s ease;
+    letter-spacing: 0.2px;
+}
+
+.btn-learned-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 36px rgba(34, 197, 94, 0.5);
+}
+
+.btn-return {
+    margin-top: 12px;
+    padding: 14px 48px;
+    font-size: 16px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 8px 28px rgba(239, 68, 68, 0.4);
+    transition: all 0.2s ease;
+    letter-spacing: 0.2px;
+}
+
+.btn-return:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 36px rgba(239, 68, 68, 0.5);
+}
+
 /* ── List button ── */
 .btn-list {
     margin-top: 12px;
