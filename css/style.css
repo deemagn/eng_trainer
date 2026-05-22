@@ -431,6 +431,37 @@ body {
     margin-top: 5px;
 }
 
+.progress-section {
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.progress-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.progress-section-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.progress-section-count {
+    font-size: 15px;
+    font-weight: 700;
+    color: #6366f1;
+}
+
+.progress-section-pct {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.35);
+    text-align: right;
+}
+
 .progress-empty {
     color: rgba(255, 255, 255, 0.4);
     text-align: center;

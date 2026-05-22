@@ -1,3 +1,6 @@
+import { fetchLearnedWords } from './api.js';
+import { verbs }             from '../data/verbs.js';
+
 const API_URL      = 'https://api.goodnewsenglish.com';
 const TOKEN_KEY    = 'et_token';
 const USERNAME_KEY = 'et_username';
@@ -166,15 +169,6 @@ async function apiPost(path, body) {
     return data;
 }
 
-async function fetchProgress() {
-    const token = getToken();
-    if (!token) return [];
-    const res = await fetch(`${API_URL}/api/progress/stats`, {
-        headers: { 'Authorization': `Bearer ${token}` },
-    });
-    if (!res.ok) return [];
-    return await res.json();
-}
 
 function openModal(title, bodyHTML) {
     const overlay = document.getElementById('modal-overlay');
@@ -192,30 +186,23 @@ async function openProgressModal() {
     document.getElementById('nav-dropdown')?.classList.remove('open');
     openModal('Мой прогресс', '<p class="progress-empty">Загрузка...</p>');
 
-    const stats = await fetchProgress();
-    const names = { verbs: 'Глаголы', hard: 'Сложные глаголы', phrases: 'Фразы', markers: 'Маркеры' };
-
-    if (!stats || stats.length === 0) {
-        document.getElementById('modal-body').innerHTML =
-            '<p class="progress-empty">Нет данных — пройди несколько заданий</p>';
-        return;
-    }
+    const learnedSet = await fetchLearnedWords('verbs');
+    const n   = learnedSet.size;
+    const N   = verbs.length;
+    const pct = N > 0 ? Math.round(n / N * 100) : 0;
 
     document.getElementById('modal-body').innerHTML = `
-        <div class="progress-stats">
-            ${stats.map(s => `
-                <div class="progress-stat">
-                    <div class="progress-stat-header">
-                        <span class="progress-stat-name">${names[s.category] || s.category}</span>
-                        <span class="progress-stat-rate">${Math.round(s.rate)}%</span>
-                    </div>
-                    <div class="progress-bar-track">
-                        <div class="progress-bar-fill" style="width:${s.rate}%"></div>
-                    </div>
-                    <div class="progress-stat-counts">${s.correct} из ${s.total} верно</div>
-                </div>
-            `).join('')}
-        </div>`;
+        <div class="progress-section">
+            <div class="progress-section-header">
+                <span class="progress-section-label">Выучено глаголов</span>
+                <span class="progress-section-count">${n} / ${N}</span>
+            </div>
+            <div class="progress-bar-track">
+                <div class="progress-bar-fill" style="width:${pct}%"></div>
+            </div>
+            <div class="progress-section-pct">${pct}%</div>
+        </div>
+    `;
 }
 
 function openAvatarPicker() {
