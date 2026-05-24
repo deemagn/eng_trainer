@@ -27,6 +27,20 @@ let verbFilter    = 'all'; // 'all' | 'irregular' | 'learned'
 let sessionCount  = 0;
 let currentItem   = null;
 let learnedVerbs  = new Set();
+let preferredVoice = null;
+
+function loadVoice() {
+    const voices = speechSynthesis.getVoices();
+    preferredVoice =
+        voices.find(v => v.name === 'Google US English') ||
+        voices.find(v => v.name === 'Samantha') ||
+        voices.find(v => v.lang === 'en-US' && !v.localService) ||
+        voices.find(v => v.lang === 'en-US') ||
+        voices.find(v => v.lang.startsWith('en')) ||
+        null;
+}
+speechSynthesis.addEventListener('voiceschanged', loadVoice);
+loadVoice();
 
 function getCurrentDataset() {
     if (currentMode === 'verbs') {
@@ -98,6 +112,7 @@ function speakCurrentItem() {
     const utt = new SpeechSynthesisUtterance(text);
     utt.lang = 'en-US';
     utt.rate = 0.85;
+    if (preferredVoice) utt.voice = preferredVoice;
     btnSpeak.classList.add('speaking');
     utt.onend   = () => btnSpeak.classList.remove('speaking');
     utt.onerror = () => btnSpeak.classList.remove('speaking');
