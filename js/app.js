@@ -51,6 +51,7 @@ const btnMarkers   = document.getElementById('btn-markers');
 const btnNext          = document.getElementById('btn-next-item');
 const btnLearnedAction = document.getElementById('btn-learned-action');
 const btnShowList      = document.getElementById('btn-show-list');
+const btnSpeak         = document.getElementById('btn-speak');
 const cardsEmpty       = document.getElementById('cards-empty');
 const cardsEmptyText   = document.getElementById('cards-empty-text');
 const learnedList      = document.getElementById('learned-list');
@@ -83,6 +84,26 @@ function verbBackHTML(item, isEnglishFirst) {
     return `<h2>${item.en}</h2><div class="grammar">${formsHTML}</div>`;
 }
 
+function speakCurrentItem() {
+    if (!currentItem || !window.speechSynthesis) return;
+    speechSynthesis.cancel();
+    let text;
+    if (currentMode === 'verbs') {
+        const past = currentItem.past.split('/')[0];
+        const v3   = (currentItem.v3 || currentItem.past).split('/')[0];
+        text = `${currentItem.en}, ${past}, ${v3}`;
+    } else {
+        text = currentItem.en;
+    }
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.lang = 'en-US';
+    utt.rate = 0.85;
+    btnSpeak.classList.add('speaking');
+    utt.onend   = () => btnSpeak.classList.remove('speaking');
+    utt.onerror = () => btnSpeak.classList.remove('speaking');
+    speechSynthesis.speak(utt);
+}
+
 function updateLearnedBtn() {
     if (currentMode !== 'verbs' || !currentItem) {
         btnLearnedAction.style.display = 'none';
@@ -104,6 +125,7 @@ function renderLearnedList(data) {
     btnNext.style.display       = 'none';
     btnLearnedAction.style.display = 'none';
     btnShowList.style.display   = 'none';
+    btnSpeak.style.display      = 'none';
     counter.textContent         = '';
     subtitle.textContent        = `Выучено: ${data.length} глаголов`;
 
@@ -140,6 +162,7 @@ function setEmptyState(msg) {
     btnNext.style.display = 'none';
     btnLearnedAction.style.display = 'none';
     btnShowList.style.display = 'none';
+    btnSpeak.style.display = 'none';
     subtitle.textContent = '';
     counter.textContent = '';
 }
@@ -150,6 +173,7 @@ function clearEmptyState() {
     cardWrapper.style.display = '';
     btnNext.style.display = '';
     btnShowList.style.display = '';
+    btnSpeak.style.display = '';
 }
 
 function updateUI() {
@@ -286,6 +310,7 @@ btnVerbs.addEventListener('click',      () => handleTabClick('verbs',   btnVerbs
 btnPhrases.addEventListener('click',    () => handleTabClick('phrases', btnPhrases));
 btnMarkers.addEventListener('click',    () => handleTabClick('markers', btnMarkers));
 btnNext.addEventListener('click', updateUI);
+btnSpeak.addEventListener('click', speakCurrentItem);
 btnShowList.addEventListener('click', openList);
 modalClose.addEventListener('click', closeList);
 modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeList(); });

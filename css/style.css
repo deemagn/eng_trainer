@@ -1746,3 +1746,29 @@ body {
         display: none;
     }
 }
+
+/* ── Speak button (cards) ── */
+.speak-btn--card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(99, 102, 241, 0.15);
+    color: #818cf8;
+    cursor: pointer;
+    margin: 8px auto;
+    transition: background 0.2s, color 0.2s;
+}
+
+.speak-btn--card:hover {
+    background: rgba(99, 102, 241, 0.3);
+    color: #a5b4fc;
+}
+
+.speak-btn--card.speaking {
+    background: #6366f1;
+    color: #fff;
+}
