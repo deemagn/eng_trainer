@@ -52,7 +52,7 @@ export const verbs = [
     { en: "stop",       ru: "останавливаться",                         past: "stopped" },
     { en: "create",     ru: "создавать",                               past: "created" },
     { en: "speak",      ru: "говорить",                                past: "spoke",       v3: "spoken" },
-    { en: "read",       ru: "читать",                                   past: "read" },
+    { en: "read",       ru: "читать",                                   past: "read",        tts: "read, red, red" },
     { en: "cook",       ru: "готовить",                                past: "cooked" },
     { en: "spoil",      ru: "портить",                                  past: "spoiled/spoilt" },
     { en: "spend",      ru: "тратить",                                  past: "spent" },

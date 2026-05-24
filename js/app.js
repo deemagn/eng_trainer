@@ -105,7 +105,7 @@ function speakCurrentItem() {
     if (currentMode === 'verbs') {
         const past = currentItem.past.split('/')[0];
         const v3   = (currentItem.v3 || currentItem.past).split('/')[0];
-        text = `${currentItem.en}, ${past}, ${v3}`;
+        text = currentItem.tts ?? `${currentItem.en}, ${past}, ${v3}`;
     } else {
         text = currentItem.en;
     }
