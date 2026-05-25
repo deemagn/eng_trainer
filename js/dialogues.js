@@ -1,5 +1,20 @@
 import { dialogues } from '../data/dialogues.js';
 
+let preferredVoice = null;
+
+function loadVoice() {
+    const voices = speechSynthesis.getVoices();
+    preferredVoice =
+        voices.find(v => v.name === 'Google US English') ||
+        voices.find(v => v.lang === 'en-US' && !v.localService) ||
+        voices.find(v => v.lang === 'en-US') ||
+        voices.find(v => v.lang.startsWith('en')) ||
+        null;
+}
+
+speechSynthesis.addEventListener('voiceschanged', loadVoice);
+loadVoice();
+
 export function initDialogues() {
     const titleEl   = document.getElementById('dial-title');
     const counterEl = document.getElementById('dial-counter');
@@ -8,35 +23,16 @@ export function initDialogues() {
     const btnNext   = document.getElementById('dial-next');
 
     let current = 0;
-    let activeAudio = null;
 
-    function speak(text, audioPath, btn) {
-        if (activeAudio) {
-            activeAudio.pause();
-            activeAudio = null;
-        }
-        document.querySelectorAll('.speak-btn.speaking')
-            .forEach(b => b.classList.remove('speaking'));
-
-        if (audioPath) {
-            const audio = new Audio(audioPath);
-            activeAudio = audio;
-            btn.classList.add('speaking');
-            audio.play();
-            audio.onended  = () => { btn.classList.remove('speaking'); activeAudio = null; };
-            audio.onerror  = () => { btn.classList.remove('speaking'); activeAudio = null; speakFallback(text, btn); };
-
-        } else {
-            speakFallback(text, btn);
-        }
-    }
-
-    function speakFallback(text, btn) {
+    function speak(text, btn) {
         if (!window.speechSynthesis) return;
         speechSynthesis.cancel();
+        document.querySelectorAll('.speak-btn.speaking')
+            .forEach(b => b.classList.remove('speaking'));
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'en-US';
         utterance.rate = 0.9;
+        if (preferredVoice) utterance.voice = preferredVoice;
         btn.classList.add('speaking');
         utterance.onend   = () => btn.classList.remove('speaking');
         utterance.onerror = () => btn.classList.remove('speaking');
@@ -67,7 +63,7 @@ export function initDialogues() {
         `).join('');
 
         listEl.querySelectorAll('.speak-btn').forEach((btn, i) => {
-            btn.addEventListener('click', () => speak(dialogue.lines[i].en, dialogue.lines[i].audio, btn));
+            btn.addEventListener('click', () => speak(dialogue.lines[i].en, btn));
         });
     }
 

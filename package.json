@@ -1,10 +1,4 @@
 {
   "name": "eng-trainer",
-  "type": "module",
-  "scripts": {
-    "generate-audio": "node scripts/generate-audio.js"
-  },
-  "dependencies": {
-    "replicate": "^1.0.1"
-  }
+  "type": "module"
 }
