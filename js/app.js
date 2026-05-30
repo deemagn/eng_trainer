@@ -1,6 +1,6 @@
 import { verbs } from '../data/verbs.js';
 import { phrases } from '../data/phrases.js';
-import { markers } from '../data/markers.js';
+import { hardWords } from '../data/hard-words.js';
 import { initDialogues } from './dialogues.js';
 import { initTasks }    from './tasks.js';
 import { initAuth }     from './auth.js';
@@ -18,15 +18,16 @@ function isIrregular(verb) {
 }
 
 const irregularVerbs = verbs.filter(isIrregular);
-const labels      = { verbs: 'Глагол', phrases: 'Фраза', markers: 'Маркер' };
-const counts      = { verbs: 'глаголов', phrases: 'фраз', markers: 'маркеров' };
-const modalTitles = { verbs: 'Глаголы', phrases: 'Фразы', markers: 'Маркеры' };
+const labels      = { verbs: 'Глагол', phrases: 'Фраза', hard: 'Сложное' };
+const counts      = { verbs: 'глаголов', phrases: 'фраз', hard: 'слов' };
+const modalTitles = { verbs: 'Глаголы', phrases: 'Фразы', hard: 'Сложные слова' };
 
 let currentMode   = 'verbs';
 let verbFilter    = 'all'; // 'all' | 'irregular' | 'learned'
 let sessionCount  = 0;
 let currentItem   = null;
 let learnedVerbs  = new Set();
+let learnedHard   = new Set();
 let preferredVoice = null;
 
 function loadVoice() {
@@ -49,7 +50,11 @@ function getCurrentDataset() {
         return base.filter(v => !learnedVerbs.has(v.en));
     }
     if (currentMode === 'phrases') return phrases;
-    return markers;
+    if (currentMode === 'hard') {
+        if (verbFilter === 'learned') return hardWords.filter(w => learnedHard.has(w.en));
+        return hardWords.filter(w => !learnedHard.has(w.en));
+    }
+    return [];
 }
 
 const cardWrapper  = document.getElementById('card-wrapper');
@@ -61,7 +66,7 @@ const counter      = document.getElementById('counter');
 const subtitle     = document.getElementById('subtitle');
 const btnVerbs     = document.getElementById('btn-verbs');
 const btnPhrases   = document.getElementById('btn-phrases');
-const btnMarkers   = document.getElementById('btn-markers');
+const btnHard      = document.getElementById('btn-hard');
 const btnNext          = document.getElementById('btn-next-item');
 const btnLearnedAction = document.getElementById('btn-learned-action');
 const btnShowList      = document.getElementById('btn-show-list');
@@ -120,7 +125,7 @@ function speakCurrentItem() {
 }
 
 function updateLearnedBtn() {
-    if (currentMode !== 'verbs' || !currentItem) {
+    if ((currentMode !== 'verbs' && currentMode !== 'hard') || !currentItem) {
         btnLearnedAction.style.display = 'none';
         return;
     }
@@ -142,10 +147,20 @@ function renderLearnedList(data) {
     btnShowList.style.display   = 'none';
     btnSpeak.style.display      = 'none';
     counter.textContent         = '';
-    subtitle.textContent        = `Выучено: ${data.length} глаголов`;
+    subtitle.textContent = currentMode === 'hard'
+        ? `Выучено: ${data.length} слов`
+        : `Выучено: ${data.length} глаголов`;
 
     learnedList.style.display = '';
     learnedList.innerHTML = data.map(v => {
+        if (currentMode === 'hard') {
+            return `
+                <div class="ll-row">
+                    <span class="ll-en">${v.en}</span>
+                    <span class="ll-ru">${v.ru}</span>
+                    <button class="ll-return-btn" data-en="${v.en}">Вернуть</button>
+                </div>`;
+        }
         const hasDistinctV3 = v.v3 && v.v3 !== v.past;
         const forms = hasDistinctV3
             ? `<span class="ll-forms">V2: <b>${v.past}</b> &nbsp; V3: <b>${v.v3}</b></span>`
@@ -161,8 +176,13 @@ function renderLearnedList(data) {
 
     learnedList.querySelectorAll('.ll-return-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
-            await removeLearnedWord('verbs', btn.dataset.en);
-            learnedVerbs.delete(btn.dataset.en);
+            if (currentMode === 'hard') {
+                await removeLearnedWord('hard', btn.dataset.en);
+                learnedHard.delete(btn.dataset.en);
+            } else {
+                await removeLearnedWord('verbs', btn.dataset.en);
+                learnedVerbs.delete(btn.dataset.en);
+            }
             updateSubtitle();
             updateUI();
         });
@@ -194,9 +214,12 @@ function clearEmptyState() {
 function updateUI() {
     const data = getCurrentDataset();
 
-    if (verbFilter === 'learned') {
+    if (verbFilter === 'learned' && (currentMode === 'verbs' || currentMode === 'hard')) {
         if (data.length === 0) {
-            setEmptyState('Выученных глаголов пока нет — нажми «✓ Выучено» на карточке');
+            const msg = currentMode === 'hard'
+                ? 'Выученных слов пока нет — нажми «✓ Выучено» на карточке'
+                : 'Выученных глаголов пока нет — нажми «✓ Выучено» на карточке';
+            setEmptyState(msg);
         } else {
             renderLearnedList(data);
         }
@@ -204,7 +227,8 @@ function updateUI() {
     }
 
     if (data.length === 0) {
-        setEmptyState('Все глаголы выучены!');
+        const msg = currentMode === 'hard' ? 'Все слова выучены!' : 'Все глаголы выучены!';
+        setEmptyState(msg);
         return;
     }
 
@@ -222,7 +246,7 @@ function updateUI() {
         cardBadge.textContent = labels[currentMode];
         textFront.innerText = isEnglishFirst ? item.en : item.ru;
 
-        if (currentMode === 'phrases' || currentMode === 'markers') {
+        if (currentMode === 'phrases' || currentMode === 'hard') {
             textBack.innerHTML = `<h2>${isEnglishFirst ? item.ru : item.en}</h2>`;
         } else {
             textBack.innerHTML = verbBackHTML(item, isEnglishFirst);
@@ -238,10 +262,23 @@ function handleTabClick(mode, activeBtn) {
     currentMode = mode;
     sessionCount = 0;
     currentItem = null;
-    [btnVerbs, btnPhrases, btnMarkers].forEach(btn => btn.classList.remove('active'));
+    [btnVerbs, btnPhrases, btnHard].forEach(btn => btn.classList.remove('active'));
     activeBtn.classList.add('active');
-    verbFilterEl.style.display = mode === 'verbs' ? 'flex' : 'none';
-    if (mode !== 'verbs') btnLearnedAction.style.display = 'none';
+
+    const showFilter = mode === 'verbs' || mode === 'hard';
+    verbFilterEl.style.display = showFilter ? 'flex' : 'none';
+
+    const irregularBtn = verbFilterEl.querySelector('[data-filter="irregular"]');
+    if (irregularBtn) irregularBtn.style.display = mode === 'verbs' ? '' : 'none';
+
+    if (mode !== 'verbs' && verbFilter === 'irregular') {
+        verbFilter = 'all';
+        verbFilterEl.querySelectorAll('.verb-filter-btn').forEach(b => {
+            b.classList.toggle('active', b.dataset.filter === 'all');
+        });
+    }
+
+    if (mode !== 'verbs' && mode !== 'hard') btnLearnedAction.style.display = 'none';
     updateSubtitle();
     updateUI();
 }
@@ -323,7 +360,7 @@ document.addEventListener('keydown', (e) => {
 cardWrapper.addEventListener('click',   () => cardElement.classList.toggle('is-flipped'));
 btnVerbs.addEventListener('click',      () => handleTabClick('verbs',   btnVerbs));
 btnPhrases.addEventListener('click',    () => handleTabClick('phrases', btnPhrases));
-btnMarkers.addEventListener('click',    () => handleTabClick('markers', btnMarkers));
+btnHard.addEventListener('click',       () => handleTabClick('hard',    btnHard));
 btnNext.addEventListener('click', updateUI);
 btnSpeak.addEventListener('click', speakCurrentItem);
 btnShowList.addEventListener('click', openList);
@@ -344,12 +381,14 @@ verbFilterEl.querySelectorAll('.verb-filter-btn').forEach(btn => {
 
 btnLearnedAction.addEventListener('click', async () => {
     if (!currentItem) return;
+    const category = currentMode === 'hard' ? 'hard' : 'verbs';
+    const learnedSet = currentMode === 'hard' ? learnedHard : learnedVerbs;
     if (verbFilter === 'learned') {
-        await removeLearnedWord('verbs', currentItem.en);
-        learnedVerbs.delete(currentItem.en);
+        await removeLearnedWord(category, currentItem.en);
+        learnedSet.delete(currentItem.en);
     } else {
-        await addLearnedWord('verbs', currentItem.en);
-        learnedVerbs.add(currentItem.en);
+        await addLearnedWord(category, currentItem.en);
+        learnedSet.add(currentItem.en);
     }
     sessionCount = 0;
     updateSubtitle();
@@ -358,8 +397,12 @@ btnLearnedAction.addEventListener('click', async () => {
 
 // ── Init ──────────────────────────────────────────────────
 
-fetchLearnedWords('verbs').then(set => {
-    learnedVerbs = set;
+Promise.all([
+    fetchLearnedWords('verbs'),
+    fetchLearnedWords('hard'),
+]).then(([verbSet, hardSet]) => {
+    learnedVerbs = verbSet;
+    learnedHard  = hardSet;
     updateUI();
 });
 
