@@ -87,7 +87,7 @@ export function initPhrasalVerbTask(container) {
     }
 
     function renderTask(data) {
-        const options = shuffle([data.c, ...data.w]);
+        const options = shuffle([data.c, ...data.w.slice(0, 3)]);
 
         container.innerHTML = `
             <div class="pv-wrap">
