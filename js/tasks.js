@@ -3,6 +3,7 @@ import { textFillTasks }                    from '../data/tasks/text-fill-presen
 import { textFillStativeTasks }             from '../data/tasks/text-fill-stative.js';
 import { initGrammarContextTask } from './tasks/grammar-context.js';
 import { initTextFillTask }       from './tasks/text-fill.js';
+import { initPhrasalVerbTask }    from './tasks/phrasal-verb.js';
 import { saveTaskProgress, fetchCompletedTasks } from './api.js';
 
 const taskGroups = [
@@ -67,7 +68,18 @@ export async function initTasks(switchPage) {
     const viewContent = document.getElementById('task-view-content');
     const backBtn     = document.getElementById('task-back-btn');
 
-    listEl.innerHTML = builtGroups.map(g => `
+    const pvCard = `
+        <div class="task-group">
+            <div class="task-group-info">
+                <h3 class="task-card-title">🔗 Phrasal Verbs</h3>
+                <p class="task-card-desc">AI-упражнения — фразовые глаголы в контексте</p>
+            </div>
+            <div class="task-variant-pills">
+                <button class="variant-pill variant-pill--start" id="btn-start-pv">Начать</button>
+            </div>
+        </div>`;
+
+    listEl.innerHTML = pvCard + builtGroups.map(g => `
         <div class="task-group">
             <div class="task-group-info">
                 <h3 class="task-card-title">${g.title}</h3>
@@ -103,6 +115,13 @@ export async function initTasks(switchPage) {
 
         const pill = e.target.closest('.variant-pill');
         if (pill)   { const item = variantMap[pill.dataset.id];   if (item) openTask(item); }
+    });
+
+    document.getElementById('btn-start-pv').addEventListener('click', () => {
+        viewContent.innerHTML = '';
+        initPhrasalVerbTask(viewContent);
+        switchPage('task-view');
+        document.querySelector('[data-page="tasks"]')?.classList.add('active');
     });
 
     backBtn.addEventListener('click', () => switchPage('tasks'));

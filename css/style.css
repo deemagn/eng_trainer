@@ -1211,6 +1211,13 @@ body {
     transform: translateY(0);
 }
 
+.variant-pill--start {
+    width: auto;
+    height: auto;
+    border-radius: 50px;
+    padding: 10px 24px;
+}
+
 .variant-pill.completed {
     background: linear-gradient(135deg, #22c55e, #16a34a);
     box-shadow: 0 4px 14px rgba(34, 197, 94, 0.45);
@@ -1771,4 +1778,111 @@ body {
 .speak-btn--card.speaking {
     background: #6366f1;
     color: #fff;
+}
+
+/* ── Phrasal Verbs task ── */
+.pv-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 8px 0;
+}
+
+.pv-loading, .pv-error {
+    color: #94a3b8;
+    text-align: center;
+    font-size: 16px;
+    padding: 32px 0;
+}
+
+.pv-error { color: #f87171; }
+
+.pv-sentence {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #e2e8f0;
+    background: rgba(255,255,255,0.05);
+    border-radius: 14px;
+    padding: 20px 24px;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.pv-sentence strong {
+    color: #a5b4fc;
+    font-weight: 700;
+}
+
+.pv-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.pv-option {
+    padding: 14px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.05);
+    color: #cbd5e1;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    text-align: center;
+}
+
+.pv-option:hover {
+    background: rgba(255,255,255,0.1);
+    color: #e2e8f0;
+}
+
+.pv-option--correct {
+    background: rgba(34, 197, 94, 0.2);
+    border-color: #22c55e;
+    color: #86efac;
+}
+
+.pv-option--wrong {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: #ef4444;
+    color: #fca5a5;
+}
+
+.pv-result {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.pv-translation {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #94a3b8;
+    background: rgba(255,255,255,0.03);
+    border-radius: 12px;
+    padding: 16px 20px;
+    border-left: 3px solid #6366f1;
+}
+
+.pv-translation strong {
+    color: #a5b4fc;
+    font-weight: 700;
+}
+
+.pv-btn-next {
+    align-self: center;
+    padding: 12px 36px;
+    border-radius: 50px;
+    border: none;
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.pv-btn-next:hover { opacity: 0.85; }
+
+@media (max-width: 480px) {
+    .pv-options { grid-template-columns: 1fr; }
 }

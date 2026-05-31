@@ -236,6 +236,65 @@ function openAvatarPicker() {
     });
 }
 
+async function openApiKeyModal() {
+    document.getElementById('nav-dropdown')?.classList.remove('open');
+
+    // Проверяем, есть ли уже ключ
+    let hasKey = false;
+    try {
+        const res = await fetch(`${API_URL}/api/user/me`, {
+            headers: { 'Authorization': `Bearer ${getToken()}` },
+        });
+        const data = await res.json();
+        hasKey = !!data.has_api_key;
+    } catch {}
+
+    openModal('Claude API ключ', `
+        <div style="display:flex;flex-direction:column;gap:12px">
+            <p style="color:#94a3b8;font-size:14px;line-height:1.5">
+                Нужен для раздела Phrasal Verbs.<br>
+                Хранится на сервере, не передаётся третьим лицам.<br>
+                Получить ключ: <a href="https://console.anthropic.com/" target="_blank" style="color:#818cf8">console.anthropic.com</a>
+            </p>
+            <input class="auth-input" id="apikey-input" type="password"
+                placeholder="${hasKey ? '••••••••••••••• (ключ уже сохранён)' : 'sk-ant-api03-...'}">
+            <p class="auth-error" id="apikey-msg"></p>
+            <button class="auth-submit" id="apikey-save">Сохранить</button>
+            ${hasKey ? '<button class="auth-submit" id="apikey-delete" style="background:linear-gradient(135deg,#ef4444,#dc2626);margin-top:4px">Удалить ключ</button>' : ''}
+        </div>
+    `);
+
+    document.getElementById('apikey-save').addEventListener('click', async () => {
+        const val = document.getElementById('apikey-input').value.trim();
+        const msg = document.getElementById('apikey-msg');
+        if (!val) { msg.textContent = 'Введите ключ'; return; }
+        try {
+            const res = await fetch(`${API_URL}/api/user/apikey`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` },
+                body: JSON.stringify({ api_key: val }),
+            });
+            if (!res.ok) throw new Error();
+            msg.style.color = '#4ade80';
+            msg.textContent = 'Ключ сохранён ✓';
+            document.getElementById('apikey-input').value = '';
+            document.getElementById('apikey-input').placeholder = '••••••••••••••• (ключ сохранён)';
+        } catch {
+            msg.style.color = '';
+            msg.textContent = 'Ошибка сохранения';
+        }
+    });
+
+    document.getElementById('apikey-delete')?.addEventListener('click', async () => {
+        await fetch(`${API_URL}/api/user/apikey`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` },
+            body: JSON.stringify({ api_key: '' }),
+        });
+        closeModal();
+    });
+}
+
 export function updateNavbar() {
     const nav = document.getElementById('nav-auth');
     if (isLoggedIn()) {
@@ -254,6 +313,7 @@ export function updateNavbar() {
                 </div>
                 <div class="nav-dropdown-divider"></div>
                 <button class="nav-dropdown-item" id="btn-progress">📊 Прогресс</button>
+                <button class="nav-dropdown-item" id="btn-apikey">🔑 Claude API ключ</button>
                 <button class="nav-dropdown-item nav-dropdown-item--danger" id="btn-logout">🚪 Выйти</button>
             </div>
         `;
@@ -267,6 +327,7 @@ export function updateNavbar() {
             openAvatarPicker();
         });
         document.getElementById('btn-progress').addEventListener('click', openProgressModal);
+        document.getElementById('btn-apikey').addEventListener('click', openApiKeyModal);
         document.getElementById('btn-logout').addEventListener('click', () => {
             clearAuth();
             updateNavbar();
