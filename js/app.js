@@ -78,7 +78,8 @@ const modalOverlay = document.getElementById('modal-overlay');
 const modalTitle   = document.getElementById('modal-title');
 const modalBody    = document.getElementById('modal-body');
 const modalClose   = document.getElementById('modal-close');
-const verbFilterEl = document.getElementById('verb-filter');
+const verbFilterEl    = document.getElementById('verb-filter');
+const engFirstToggle  = document.getElementById('eng-first-toggle');
 
 // ── Cards page ────────────────────────────────────────────
 
@@ -238,7 +239,7 @@ function updateUI() {
 
     setTimeout(() => {
         const item = data[Math.floor(Math.random() * data.length)];
-        const isEnglishFirst = Math.random() > 0.5;
+        const isEnglishFirst = engFirstToggle.checked || Math.random() > 0.5;
 
         currentItem = item;
         sessionCount++;
@@ -363,6 +364,7 @@ btnPhrases.addEventListener('click',    () => handleTabClick('phrases', btnPhras
 btnHard.addEventListener('click',       () => handleTabClick('hard',    btnHard));
 btnNext.addEventListener('click', updateUI);
 btnSpeak.addEventListener('click', speakCurrentItem);
+engFirstToggle.addEventListener('change', updateUI);
 btnShowList.addEventListener('click', openList);
 modalClose.addEventListener('click', closeList);
 modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeList(); });

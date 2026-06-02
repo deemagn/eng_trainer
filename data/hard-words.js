@@ -147,4 +147,8 @@ export const hardWords = [
     { en: "to jeopardise",     ru: "подвергать опасности, ставить под угрозу" },
     { en: "to intercept",      ru: "перехватить" },
     { en: "utter",             ru: "полный, абсолютный" },
+    { en: "clutter",           ru: "беспорядок" },
+    { en: "presence",          ru: "присутствие" },
+    { en: "desire",            ru: "желание" },
+    { en: "keen on",           ru: "увлечённый чем-то" },
 ];
