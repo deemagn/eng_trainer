@@ -45,13 +45,29 @@ function md(text) {
     return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 }
 
+function pickMeaning(ru) {
+    const parts = ru.split('/').map(s => s.trim()).filter(Boolean);
+    return parts[Math.floor(Math.random() * parts.length)];
+}
+
 export function initPhrasalVerbTask(container) {
     let answered = false;
 
-    async function loadNext() {
-        answered = false;
-        const item = phrasalVerbs[Math.floor(Math.random() * phrasalVerbs.length)];
+    function onAnswer(btn) {
+        if (answered) return;
+        answered = true;
+        const correct = btn.dataset.correct === 'true';
+        btn.classList.add(correct ? 'pv-option--correct' : 'pv-option--wrong');
+        if (!correct) {
+            container.querySelectorAll('.pv-option').forEach(b => {
+                if (b.dataset.correct === 'true') b.classList.add('pv-option--correct');
+            });
+        }
+        container.querySelector('#pv-next-wrap')?.classList.add('open');
+    }
 
+    // ── Вариант 1: API — предложение от Haiku ────────────────
+    async function loadApiTask(item) {
         container.innerHTML = `<div class="pv-wrap"><p class="pv-loading">Генерируем упражнение…</p></div>`;
 
         try {
@@ -75,7 +91,7 @@ export function initPhrasalVerbTask(container) {
             if (!res.ok) throw new Error();
 
             const data = await res.json();
-            renderTask(data);
+            renderApiTask(data);
         } catch {
             container.innerHTML = `
                 <div class="pv-wrap">
@@ -86,7 +102,7 @@ export function initPhrasalVerbTask(container) {
         }
     }
 
-    function renderTask(data) {
+    function renderApiTask(data) {
         const options = shuffle([data.c, ...data.w.slice(0, 3)]);
 
         container.innerHTML = `
@@ -118,21 +134,51 @@ export function initPhrasalVerbTask(container) {
 
         container.querySelectorAll('.pv-option').forEach(btn => {
             btn.addEventListener('click', () => {
-                if (answered) return;
-                answered = true;
-                const correct = btn.dataset.correct === 'true';
-                btn.classList.add(correct ? 'pv-option--correct' : 'pv-option--wrong');
-                if (!correct) {
-                    container.querySelectorAll('.pv-option').forEach(b => {
-                        if (b.dataset.correct === 'true') b.classList.add('pv-option--correct');
-                    });
-                }
+                onAnswer(btn);
                 container.querySelector('#pv-translation').classList.add('open');
-                container.querySelector('#pv-next-wrap').classList.add('open');
             });
         });
 
         container.querySelector('#pv-next').addEventListener('click', loadNext);
+    }
+
+    // ── Вариант 2: только фразовый глагол + 4 перевода ───────
+    function renderSimpleTask(item) {
+        const correct = pickMeaning(item.ru);
+        const others  = shuffle(phrasalVerbs.filter(p => p.pv !== item.pv && p.ru));
+        const wrongs  = others.slice(0, 3).map(p => pickMeaning(p.ru));
+        const options = shuffle([correct, ...wrongs]);
+
+        container.innerHTML = `
+            <div class="pv-wrap">
+                <p class="pv-verb-display">${item.pv}</p>
+                <div class="pv-options">
+                    ${options.map(opt => `
+                        <button class="pv-option" data-correct="${opt === correct}">${opt}</button>
+                    `).join('')}
+                </div>
+                <div class="pv-next-reveal" id="pv-next-wrap">
+                    <button class="pv-btn-next" id="pv-next">Следующий →</button>
+                </div>
+            </div>`;
+
+        container.querySelectorAll('.pv-option').forEach(btn => {
+            btn.addEventListener('click', () => onAnswer(btn));
+        });
+
+        container.querySelector('#pv-next').addEventListener('click', loadNext);
+    }
+
+    // ── Выбор варианта ────────────────────────────────────────
+    function loadNext() {
+        answered = false;
+        const item = phrasalVerbs[Math.floor(Math.random() * phrasalVerbs.length)];
+
+        if (Math.random() < 0.5) {
+            renderSimpleTask(item);
+        } else {
+            loadApiTask(item);
+        }
     }
 
     loadNext();
