@@ -338,21 +338,41 @@ export function updateNavbar() {
     }
 }
 
-export function openAuthModal() {
-    document.getElementById('auth-overlay').classList.add('open');
+function closeAuthModal() {
+    const overlay = document.getElementById('auth-overlay');
+    overlay.classList.remove('open');
+    // Remove password field from DOM after close animation to prevent iOS Safari prompt
+    setTimeout(() => {
+        document.getElementById('auth-modal-content').innerHTML = '';
+    }, 300);
 }
 
-export function initAuth() {
-    const overlay       = document.getElementById('auth-overlay');
-    const form          = document.getElementById('auth-form');
-    const tabs          = document.querySelectorAll('.auth-tab');
-    const usernameInput = document.getElementById('auth-email');
-    const passwordInput = document.getElementById('auth-password');
-    const errorEl       = document.getElementById('auth-error');
-    const submitBtn     = document.getElementById('auth-submit');
-    const closeBtn      = document.getElementById('auth-close');
+export function openAuthModal() {
+    const overlay = document.getElementById('auth-overlay');
+    const content = document.getElementById('auth-modal-content');
+
+    content.innerHTML = `
+        <button class="auth-close" id="auth-close">✕</button>
+        <h2 class="auth-title">English Trainer</h2>
+        <div class="auth-tabs">
+            <button class="auth-tab active" data-mode="login">Войти</button>
+            <button class="auth-tab" data-mode="register">Регистрация</button>
+        </div>
+        <form id="auth-form" class="auth-form" autocomplete="off">
+            <input class="auth-input" id="auth-email" type="text" placeholder="Имя пользователя" required>
+            <input class="auth-input" id="auth-password" type="password" placeholder="Пароль" required>
+            <p class="auth-error" id="auth-error"></p>
+            <button class="auth-submit" id="auth-submit" type="submit">Войти</button>
+        </form>
+    `;
 
     let mode = 'login';
+    const form       = content.querySelector('#auth-form');
+    const tabs       = content.querySelectorAll('.auth-tab');
+    const submitBtn  = content.querySelector('#auth-submit');
+    const errorEl    = content.querySelector('#auth-error');
+
+    content.querySelector('#auth-close').addEventListener('click', closeAuthModal);
 
     tabs.forEach(tab => tab.addEventListener('click', () => {
         mode = tab.dataset.mode;
@@ -361,40 +381,45 @@ export function initAuth() {
         errorEl.textContent = '';
     }));
 
-    closeBtn.addEventListener('click', () => overlay.classList.remove('open'));
-    overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) overlay.classList.remove('open');
-    });
-
-    document.addEventListener('click', (e) => {
-        const dropdown = document.getElementById('nav-dropdown');
-        if (dropdown && !e.target.closest('#nav-user') && !e.target.closest('#nav-dropdown')) {
-            dropdown.classList.remove('open');
-        }
-    });
-
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const username = usernameInput.value.trim();
-        const password = passwordInput.value;
+        const username = content.querySelector('#auth-email').value.trim();
+        const password = content.querySelector('#auth-password').value;
         errorEl.textContent = '';
         submitBtn.disabled = true;
         try {
             if (username === 'test' && password === 'test') {
                 saveAuth(createLocalToken(), 'test');
-                overlay.classList.remove('open');
+                closeAuthModal();
                 updateNavbar();
                 return;
             }
             const path = mode === 'login' ? '/api/auth/login' : '/api/auth/register';
             const { token, avatar } = await apiPost(path, { username, password });
             saveAuth(token, username, avatar);
-            overlay.classList.remove('open');
+            closeAuthModal();
             updateNavbar();
         } catch (err) {
             errorEl.textContent = err.message;
         } finally {
             submitBtn.disabled = false;
+        }
+    });
+
+    overlay.classList.add('open');
+}
+
+export function initAuth() {
+    const overlay = document.getElementById('auth-overlay');
+
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) closeAuthModal();
+    });
+
+    document.addEventListener('click', (e) => {
+        const dropdown = document.getElementById('nav-dropdown');
+        if (dropdown && !e.target.closest('#nav-user') && !e.target.closest('#nav-dropdown')) {
+            dropdown.classList.remove('open');
         }
     });
 
