@@ -61,7 +61,7 @@ export function initPhrasalVerbTask(container) {
                     'Content-Type':  'application/json',
                     'Authorization': `Bearer ${getToken()}`,
                 },
-                body: JSON.stringify({ verb: item.pv }),
+                body: JSON.stringify({ verb: item.pv, meaning: item.ru }),
             });
 
             if (res.status === 401) {
