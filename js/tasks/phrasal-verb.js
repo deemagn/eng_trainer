@@ -92,6 +92,9 @@ export function initPhrasalVerbTask(container) {
         container.innerHTML = `
             <div class="pv-wrap">
                 <p class="pv-sentence">${md(data.s)}</p>
+                <div class="pv-translation-reveal" id="pv-translation">
+                    <p class="pv-translation">${md(data.t)}</p>
+                </div>
                 <button class="speak-btn speak-btn--card pv-speak-btn" id="pv-speak" title="Озвучить">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
@@ -104,8 +107,7 @@ export function initPhrasalVerbTask(container) {
                         <button class="pv-option" data-correct="${opt === data.c}">${opt}</button>
                     `).join('')}
                 </div>
-                <div class="pv-result" id="pv-result" style="display:none">
-                    <p class="pv-translation">${md(data.t)}</p>
+                <div class="pv-next-reveal" id="pv-next-wrap">
                     <button class="pv-btn-next" id="pv-next">Следующий →</button>
                 </div>
             </div>`;
@@ -125,7 +127,8 @@ export function initPhrasalVerbTask(container) {
                         if (b.dataset.correct === 'true') b.classList.add('pv-option--correct');
                     });
                 }
-                container.querySelector('#pv-result').style.display = '';
+                container.querySelector('#pv-translation').classList.add('open');
+                container.querySelector('#pv-next-wrap').classList.add('open');
             });
         });
 
