@@ -1921,6 +1921,11 @@ body {
     .pv-options { grid-template-columns: 1fr; }
 }
 
+.pv-list-btn {
+    display: block;
+    margin: 16px auto 0;
+}
+
 /* ── Random pick ── */
 .random-pick-wrap {
     margin-bottom: 20px;
