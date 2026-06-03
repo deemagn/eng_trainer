@@ -4,6 +4,7 @@ import { textFillStativeTasks }             from '../data/tasks/text-fill-stativ
 import { initGrammarContextTask } from './tasks/grammar-context.js';
 import { initTextFillTask }       from './tasks/text-fill.js';
 import { initPhrasalVerbTask }    from './tasks/phrasal-verb.js';
+import { phrasalVerbs }           from '../data/phrasal-verbs.js';
 import { saveTaskProgress, fetchCompletedTasks } from './api.js';
 
 const taskGroups = [
@@ -118,8 +119,23 @@ export async function initTasks(switchPage) {
     });
 
     document.getElementById('btn-start-pv').addEventListener('click', () => {
-        viewContent.innerHTML = '';
-        initPhrasalVerbTask(viewContent);
+        viewContent.innerHTML = '<div id="pv-task-area"></div>';
+        initPhrasalVerbTask(document.getElementById('pv-task-area'));
+
+        const listBtn = document.createElement('button');
+        listBtn.className = 'btn-list pv-list-btn';
+        listBtn.textContent = 'Весь список';
+        listBtn.addEventListener('click', () => {
+            document.getElementById('modal-title').textContent = `Phrasal Verbs — ${phrasalVerbs.length}`;
+            document.getElementById('modal-body').innerHTML = phrasalVerbs.map(item => `
+                <div class="list-item">
+                    <span class="en">${item.pv}</span>
+                    <span class="ru">${item.ru}</span>
+                </div>`).join('');
+            document.getElementById('modal-overlay').classList.add('open');
+        });
+        viewContent.appendChild(listBtn);
+
         switchPage('task-view');
         document.querySelector('[data-page="tasks"]')?.classList.add('active');
     });
