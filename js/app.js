@@ -79,6 +79,7 @@ const modalTitle   = document.getElementById('modal-title');
 const modalBody    = document.getElementById('modal-body');
 const modalClose   = document.getElementById('modal-close');
 const verbFilterEl    = document.getElementById('verb-filter');
+const engToggleEl     = document.getElementById('eng-toggle');
 const engFirstToggle  = document.getElementById('eng-first-toggle');
 
 // ── Cards page ────────────────────────────────────────────
@@ -147,13 +148,21 @@ function renderLearnedList(data) {
     btnLearnedAction.style.display = 'none';
     btnShowList.style.display   = 'none';
     btnSpeak.style.display      = 'none';
+    engToggleEl.style.display   = 'none';
     counter.textContent         = '';
     subtitle.textContent = currentMode === 'hard'
         ? `Выучено: ${data.length} слов`
         : `Выучено: ${data.length} глаголов`;
 
     learnedList.style.display = '';
-    learnedList.innerHTML = data.map(v => {
+
+    const randomBlock = data.length >= 3 ? `
+        <div class="random-pick-wrap">
+            <button class="btn-random-pick" id="btn-random-pick">Выбрать три случайных</button>
+            <div class="random-pick-display" id="random-pick-display"></div>
+        </div>` : '';
+
+    learnedList.innerHTML = randomBlock + data.map(v => {
         if (currentMode === 'hard') {
             return `
                 <div class="ll-row">
@@ -174,6 +183,12 @@ function renderLearnedList(data) {
                 <button class="ll-return-btn" data-en="${v.en}">Вернуть</button>
             </div>`;
     }).join('');
+
+    document.getElementById('btn-random-pick')?.addEventListener('click', () => {
+        const picked = [...data].sort(() => Math.random() - 0.5).slice(0, 3);
+        document.getElementById('random-pick-display').innerHTML =
+            picked.map(v => `<span class="random-word">${v.en}</span>`).join('');
+    });
 
     learnedList.querySelectorAll('.ll-return-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
@@ -199,6 +214,7 @@ function setEmptyState(msg) {
     btnLearnedAction.style.display = 'none';
     btnShowList.style.display = 'none';
     btnSpeak.style.display = 'none';
+    engToggleEl.style.display = 'none';
     subtitle.textContent = '';
     counter.textContent = '';
 }
@@ -210,6 +226,7 @@ function clearEmptyState() {
     btnNext.style.display = '';
     btnShowList.style.display = '';
     btnSpeak.style.display = '';
+    engToggleEl.style.display = '';
 }
 
 function updateUI() {
