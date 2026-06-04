@@ -220,4 +220,11 @@ export const hardWords = [
     { en: "attrition",             ru: "истощение / сокращение рабочих мест" },
     { en: "retention",             ru: "удержание" },
     { en: "shift",                 ru: "изменение, сдвиг" },
+    { en: "consistency",           ru: "регулярность, постоянство" },
+    { en: "meaningful",            ru: "значимый, содержательный" },
+    { en: "temptation",            ru: "искушение, соблазн" },
+    { en: "to resist",             ru: "противостоять, сопротивляться" },
+    { en: "resilience",            ru: "устойчивость" },
+    { en: "to frustrate",          ru: "расстраивать, вводить в ступор" },
+    { en: "to distract",           ru: "отвлекать, сбивать с толку" },
 ];
