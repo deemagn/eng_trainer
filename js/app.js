@@ -167,7 +167,7 @@ function renderLearnedList(data) {
         </div>` : '';
 
     learnedList.innerHTML = randomBlock + data.map(v => {
-        if (currentMode === 'hard') {
+        if (currentMode === 'hard' || currentMode === 'new') {
             return `
                 <div class="ll-row">
                     <span class="ll-en">${v.en}</span>
