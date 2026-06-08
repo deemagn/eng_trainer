@@ -63,6 +63,20 @@ export async function removeLearnedWord(category, wordEn) {
     }).catch(() => {});
 }
 
+export async function generateLearnedText(words) {
+    if (isLocalToken()) return { error: 'Войдите в аккаунт для использования этой функции' };
+    try {
+        const res = await fetch(`${API_URL}/api/generate-text`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` },
+            body: JSON.stringify({ words }),
+        });
+        return res.json();
+    } catch {
+        return { error: 'Ошибка сети' };
+    }
+}
+
 export async function fetchCompletedTasks() {
     if (isLocalToken()) return new Set();
     try {

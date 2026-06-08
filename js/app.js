@@ -4,7 +4,7 @@ import { hardWords } from '../data/hard-words.js';
 import { initDialogues } from './dialogues.js';
 import { initTasks }    from './tasks.js';
 import { initAuth }     from './auth.js';
-import { fetchLearnedWords, addLearnedWord, removeLearnedWord } from './api.js';
+import { fetchLearnedWords, addLearnedWord, removeLearnedWord, generateLearnedText } from './api.js';
 
 function isIrregular(verb) {
     const en   = verb.en.toLowerCase();
@@ -145,6 +145,55 @@ function updateLearnedBtn() {
     }
 }
 
+function openTextGenModal(data) {
+    const maxCount = Math.min(data.length, 50);
+    const defaultCount = Math.min(15, maxCount);
+
+    function showConfig() {
+        modalTitle.textContent = 'Текст из выученных слов';
+        modalBody.innerHTML = `
+            <div class="text-gen-config">
+                <p class="text-gen-label">Количество слов: <b id="tg-count-val">${defaultCount}</b></p>
+                <input class="text-gen-range" type="range" id="tg-range"
+                    min="5" max="${maxCount}" value="${defaultCount}">
+                <div class="text-gen-range-labels"><span>5</span><span>${maxCount}</span></div>
+                <button class="btn-text-gen-go" id="tg-submit">Создать текст →</button>
+            </div>`;
+        modalOverlay.classList.add('open');
+
+        const range = document.getElementById('tg-range');
+        const countVal = document.getElementById('tg-count-val');
+        range.addEventListener('input', () => { countVal.textContent = range.value; });
+
+        document.getElementById('tg-submit').addEventListener('click', async () => {
+            const count = parseInt(range.value);
+            const picked = [...data].sort(() => Math.random() - 0.5).slice(0, count);
+            const words = picked.map(v => v.en);
+
+            modalTitle.textContent = 'Генерирую текст…';
+            modalBody.innerHTML = '<div class="text-gen-loading"><span></span><span></span><span></span></div>';
+
+            const result = await generateLearnedText(words);
+
+            if (result.error) {
+                modalTitle.textContent = 'Ошибка';
+                modalBody.innerHTML = `<p class="text-gen-error">${result.error}</p>
+                    <button class="btn-text-gen-again" id="tg-again">← Назад</button>`;
+                document.getElementById('tg-again').addEventListener('click', showConfig);
+                return;
+            }
+
+            modalTitle.textContent = `Текст создан • ${count} слов`;
+            modalBody.innerHTML = `
+                <div class="generated-text">${result.text}</div>
+                <button class="btn-text-gen-again" id="tg-again">← Ещё раз</button>`;
+            document.getElementById('tg-again').addEventListener('click', showConfig);
+        });
+    }
+
+    showConfig();
+}
+
 function renderLearnedList(data) {
     cardsEmpty.style.display    = 'none';
     cardWrapper.style.display   = 'none';
@@ -164,6 +213,7 @@ function renderLearnedList(data) {
         <div class="random-pick-wrap">
             <button class="btn-random-pick" id="btn-random-pick">Выбрать три случайных</button>
             <div class="random-pick-display" id="random-pick-display"></div>
+            ${data.length >= 5 ? '<button class="btn-text-gen" id="btn-text-gen">Текст из выученных</button>' : ''}
         </div>` : '';
 
     learnedList.innerHTML = randomBlock + data.map(v => {
@@ -192,6 +242,10 @@ function renderLearnedList(data) {
         const picked = [...data].sort(() => Math.random() - 0.5).slice(0, 3);
         document.getElementById('random-pick-display').innerHTML =
             picked.map(v => `<span class="random-word">${v.en}</span>`).join('');
+    });
+
+    document.getElementById('btn-text-gen')?.addEventListener('click', () => {
+        openTextGenModal(data);
     });
 
     learnedList.querySelectorAll('.ll-return-btn').forEach(btn => {

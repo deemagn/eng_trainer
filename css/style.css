@@ -1969,6 +1969,103 @@ body {
     font-weight: 600;
 }
 
+/* ── Text gen button ── */
+.btn-text-gen {
+    padding: 10px 28px;
+    border-radius: 50px;
+    border: 1px solid rgba(168, 85, 247, 0.4);
+    background: rgba(168, 85, 247, 0.1);
+    color: #d8b4fe;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+    margin-top: 4px;
+}
+.btn-text-gen:hover {
+    background: rgba(168, 85, 247, 0.2);
+    border-color: rgba(168, 85, 247, 0.7);
+}
+
+/* ── Text gen modal ── */
+.text-gen-config {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 8px 0;
+}
+.text-gen-label { font-size: 16px; color: #cbd5e1; margin: 0; }
+.text-gen-range {
+    width: 100%;
+    accent-color: #a855f7;
+    cursor: pointer;
+}
+.text-gen-range-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #64748b;
+    margin-top: -8px;
+}
+.btn-text-gen-go {
+    align-self: center;
+    padding: 11px 32px;
+    border-radius: 50px;
+    border: none;
+    background: linear-gradient(135deg, #a855f7, #6366f1);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: opacity 0.2s;
+}
+.btn-text-gen-go:hover { opacity: 0.85; }
+
+.text-gen-loading {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 40px 0;
+}
+.text-gen-loading span {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #a855f7;
+    animation: tg-pulse 1.2s ease-in-out infinite;
+}
+.text-gen-loading span:nth-child(2) { animation-delay: 0.2s; }
+.text-gen-loading span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes tg-pulse {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+    40% { transform: scale(1); opacity: 1; }
+}
+
+.generated-text {
+    font-size: 15px;
+    line-height: 1.75;
+    color: #cbd5e1;
+    white-space: pre-wrap;
+}
+.generated-text b {
+    color: #e2e8f0;
+    font-weight: 700;
+}
+.btn-text-gen-again {
+    display: block;
+    margin: 20px auto 0;
+    padding: 9px 24px;
+    border-radius: 50px;
+    border: 1px solid rgba(168, 85, 247, 0.4);
+    background: transparent;
+    color: #d8b4fe;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.btn-text-gen-again:hover { background: rgba(168, 85, 247, 0.1); }
+.text-gen-error { color: #f87171; text-align: center; padding: 16px 0; }
+
 /* ── Eng-first toggle ── */
 .eng-toggle {
     display: flex;
