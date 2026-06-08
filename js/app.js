@@ -159,7 +159,7 @@ function openTextGenModal(data) {
                 <div class="text-gen-range-labels"><span>5</span><span>${maxCount}</span></div>
                 <button class="btn-text-gen-go" id="tg-submit">Создать текст →</button>
             </div>`;
-        modalOverlay.classList.add('open');
+        modalOverlay.classList.add('open', 'modal-centered');
 
         const range = document.getElementById('tg-range');
         const countVal = document.getElementById('tg-count-val');
@@ -379,7 +379,7 @@ function openList() {
 }
 
 function closeList() {
-    modalOverlay.classList.remove('open');
+    modalOverlay.classList.remove('open', 'modal-centered');
 }
 
 // ── Navigation ────────────────────────────────────────────
