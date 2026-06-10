@@ -408,4 +408,12 @@ export const hardWords = [
     { en: "to deliver",            ru: "доставлять, обеспечивать результат" },
     { en: "to affirm",             ru: "подтверждать" },
     { en: "to mesmerize",          ru: "завораживать" },
+    { en: "to estimate",           ru: "оценивать" },
+    { en: "precise",               ru: "точный, аккуратный" },
+    { en: "assessment",            ru: "оценка, определение" },
+    { en: "to unleash",            ru: "спускать, развязывать (начинать)" },
+    { en: "mutually",              ru: "взаимно" },
+    { en: "to urge",                ru: "побуждать" },
+    { en: "ostensibly",            ru: "якобы (по-видимому)" },
+    { en: "allegedly",             ru: "якобы (как утверждают)" },
 ];
