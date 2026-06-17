@@ -237,5 +237,98 @@ export const dialogues = [
                 "ru": "Честно, терпение, которого это требует. Нельзя торопиться. И смотреть на свои ранние работы и морщиться — это больно. Но я уже вижу, насколько выросла.",
             },
         ]
+    },
+    {
+        "title": "Обычные дни",
+        "lines": [
+            {
+                "en": "Hey, haven't seen you in a bit. What have you been up to lately?",
+                "ru": "Привет, давно не виделись. Чем занималась в последнее время?",
+            },
+            {
+                "en": "Honestly, not that much. I've mostly been staying in, catching up on some shows and doing course stuff. What about you?",
+                "ru": "Честно, не особо чем. В основном сидела дома, досматривала сериалы и занималась учёбой. А ты?",
+            },
+            {
+                "en": "Pretty much the same. I've been trying to get back into a routine but it's not really working out.",
+                "ru": "Примерно то же самое. Пытаюсь вернуться к режиму, но как-то не очень получается.",
+            },
+            {
+                "en": "I know that feeling. I kept telling myself I'd go to bed early and then somehow it's 2am and I'm down a rabbit hole watching makeup tutorials.",
+                "ru": "Знаю это чувство. Всё время говорю себе, что лягу пораньше, а потом каким-то образом уже 2 ночи и я провалилась в бездну туториалов по макияжу.",
+            },
+            {
+                "en": "Ha, sounds about right. Did you end up going anywhere over the weekend?",
+                "ru": "Ха, звучит знакомо. А на выходных куда-нибудь выбиралась?",
+            },
+            {
+                "en": "Yeah, we went to that new place near the mall — I forget what it's called. It was decent, nothing special. The coffee was way overpriced though.",
+                "ru": "Да, ходили в то новое место возле торгового центра — не помню, как называется. Нормально, ничего особенного. Но кофе был жутко дорогой.",
+            },
+            {
+                "en": "Ugh, that's the worst. Was it at least busy or pretty dead?",
+                "ru": "О, это худшее. Там хоть народу было много или пустовато?",
+            },
+            {
+                "en": "Packed. We had to wait like twenty minutes for a table, which kind of killed the vibe. But it was nice to get out of the house for a bit.",
+                "ru": "Битком. Ждали столик минут двадцать, что немного убило настроение. Но всё равно было приятно выбраться из дома.",
+            },
+            {
+                "en": "Fair enough. I've just been glued to my laptop, trying to sort out a project I keep putting off.",
+                "ru": "Понятно. Я вот приросла к ноутбуку — пытаюсь разобраться с проектом, который постоянно откладываю.",
+            },
+            {
+                "en": "Oh yeah? What kind of project?",
+                "ru": "О, правда? А что за проект?",
+            },
+            {
+                "en": "Just some app stuff. Nothing exciting. I get into it for like an hour and then I lose focus and end up doing something completely unrelated.",
+                "ru": "Да так, по приложению кое-что. Ничего захватывающего. Врубаюсь на час, потом теряю концентрацию и в итоге делаю что-то совершенно другое.",
+            },
+            {
+                "en": "That's literally me with my practice looks. I'll sit down to do a full face and then halfway through I just get distracted and wipe it all off.",
+                "ru": "Это буквально я с тренировочными образами. Сяду делать полный макияж, а на середине отвлекусь и всё сотру.",
+            },
+            {
+                "en": "At least you have something to show for it. I just have seventeen open browser tabs and nothing done.",
+                "ru": "Ну хоть что-то остаётся. У меня просто семнадцать открытых вкладок и ничего не сделано.",
+            },
+            {
+                "en": "Okay that's so relatable it's painful. I've started closing all my tabs before bed and it genuinely helps.",
+                "ru": "Боже, это настолько знакомо, что больно. Я стала закрывать все вкладки перед сном, и это реально помогает.",
+            },
+            {
+                "en": "Maybe I should try that. Did you do anything fun at least, or was it just the usual?",
+                "ru": "Может, попробую. А было что-нибудь интересное, или как обычно?",
+            },
+            {
+                "en": "I had a really nice evening actually — we cooked at home, opened a bottle of wine, just kind of unwound. It felt good to slow down for once.",
+                "ru": "Один вечер был очень хорошим — готовили дома, открыли бутылку вина, просто расслабились. Было приятно наконец-то сбавить темп.",
+            },
+            {
+                "en": "That sounds really nice. I feel like I never properly switch off, even when I'm not doing anything productive.",
+                "ru": "Звучит здорово. У меня такое ощущение, что я никогда по-настоящему не отключаюсь, даже когда ничего полезного не делаю.",
+            },
+            {
+                "en": "Same. I think I need to get better at just being okay with doing nothing, you know? Not everything has to be useful.",
+                "ru": "Аналогично. Думаю, мне нужно научиться просто спокойно ничего не делать. Не всё должно быть полезным.",
+            },
+            {
+                "en": "Exactly. Anyway, have you got anything coming up this week?",
+                "ru": "Точно. Кстати, есть что-нибудь на этой неделе?",
+            },
+            {
+                "en": "Not much — a course session on Wednesday and I'm thinking of finally sorting out my kit, it's a total mess. You?",
+                "ru": "Не особо — занятие в среду, и думаю наконец-то разобрать свой набор, там полный хаос. А ты?",
+            },
+            {
+                "en": "I really need to get outside more. I'm thinking of just picking a direction and going for a walk, no plan.",
+                "ru": "Мне точно нужно больше бывать на улице. Думаю просто выбрать направление и пойти гулять без всякого плана.",
+            },
+            {
+                "en": "Honestly that sounds perfect. Sometimes that's all you need.",
+                "ru": "Честно, это звучит идеально. Иногда только это и нужно.",
+            },
+        ]
     }
 ];
