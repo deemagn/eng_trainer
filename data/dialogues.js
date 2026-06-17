@@ -330,5 +330,98 @@ export const dialogues = [
                 "ru": "Честно, это звучит идеально. Иногда только это и нужно.",
             },
         ]
+    },
+    {
+        "title": "В магазине товаров для дома",
+        "lines": [
+            {
+                "en": "Excuse me, I'm looking for some storage boxes — specifically for bed linen. Am I in the right section?",
+                "ru": "Простите, я ищу боксы для хранения — конкретно для постельного белья. Я правильно пришла?",
+            },
+            {
+                "en": "You're close! Bedding storage is just around the corner, past the shelving units. Are you looking for something specific?",
+                "ru": "Почти! Хранение постельного белья вон за углом, за стеллажами. Ищете что-то конкретное?",
+            },
+            {
+                "en": "Yeah, ideally something with a lid. We've got a lot of spare sheets and duvets piling up and I just need to keep them out of the way.",
+                "ru": "Да, в идеале что-нибудь с крышкой. У нас накопилось много запасных простыней и одеял, просто нужно куда-то убрать.",
+            },
+            {
+                "en": "We've got a few options. These fabric ones are really popular — they're lightweight, they stack well, and the lid zips up so everything stays dust-free.",
+                "ru": "У нас есть несколько вариантов. Вот эти тканевые очень популярны — лёгкие, хорошо складываются стопкой, и крышка на молнии, так что всё защищено от пыли.",
+            },
+            {
+                "en": "Oh that's handy. Are they sturdy enough to put on a high shelf, like if I stack two or three on top of each other?",
+                "ru": "О, удобно. А они достаточно прочные, чтобы ставить на высокую полку? Например, если сложить два или три друг на друга?",
+            },
+            {
+                "en": "The fabric ones I'd only stack two high, honestly. If you want something more heavy-duty, these plastic ones with the clip lids are much more solid.",
+                "ru": "Тканевые я бы складывала максимум в два слоя, честно говоря. Если нужно что-то понадёжнее, вот эти пластиковые с защёлкивающимися крышками гораздо крепче.",
+            },
+            {
+                "en": "Right. And size-wise, would a king duvet fit in one of these?",
+                "ru": "Понятно. А по размеру — двуспальное одеяло влезет в один такой бокс?",
+            },
+            {
+                "en": "Just about, yeah. You'd need to fold it pretty tightly but it should fit. A lot of people buy two — one for the duvet, one for the sheets and pillowcases.",
+                "ru": "Едва, но влезет. Нужно сложить довольно плотно, но должно войти. Многие берут два — один для одеяла, другой для простыней и наволочек.",
+            },
+            {
+                "en": "That makes sense. I'll probably do that. Actually, while I'm here — I'm also looking for a small cabinet, something with open shelves for bits and pieces. Like a hallway thing.",
+                "ru": "Логично. Наверное, так и сделаю. Кстати, раз уж я здесь — ещё ищу небольшую тумбу с открытыми полками для всякой мелочи. Что-то типа прихожей.",
+            },
+            {
+                "en": "Sure, what kind of stuff are you storing? Just so I can point you in the right direction.",
+                "ru": "Конечно, а что планируете хранить? Чтобы я могла направить вас куда нужно.",
+            },
+            {
+                "en": "Mostly small things — keys, chargers, random odds and ends. Nothing heavy. I just need something that looks decent and doesn't take up too much space.",
+                "ru": "В основном мелочи — ключи, зарядки, всякое разное. Ничего тяжёлого. Просто нужно что-то приличное на вид и не слишком большое.",
+            },
+            {
+                "en": "In that case I'd check out our modular shelving range — it's over in the furniture section. Some of them are quite narrow, perfect for a hallway.",
+                "ru": "Тогда советую посмотреть нашу модульную стеллажную серию — она вон в отделе мебели. Некоторые модели довольно узкие, идеально для прихожей.",
+            },
+            {
+                "en": "Is it the kind of thing you can put together yourself or does it need two people?",
+                "ru": "Это можно собрать самому или нужны двое?",
+            },
+            {
+                "en": "Most of them are fine solo, to be honest. They come with pretty clear instructions. The bigger units are easier with two people but the smaller ones are no problem.",
+                "ru": "Большинство спокойно можно собрать в одиночку, честно говоря. Инструкции там довольно понятные. Большие модели проще с помощником, но маленькие — без проблем.",
+            },
+            {
+                "en": "Good to know, I'd probably be doing it on my own. Do they come in different colours or is it mostly just white?",
+                "ru": "Хорошо знать, я скорее всего буду собирать сама. Они бывают разных цветов или в основном только белые?",
+            },
+            {
+                "en": "We've got white, light oak, and a dark walnut finish. The oak one's been really popular lately — it looks more natural than the white.",
+                "ru": "У нас есть белый, светлый дуб и тёмный орех. Дуб в последнее время очень популярен — выглядит более натурально, чем белый.",
+            },
+            {
+                "en": "I think I'd go for the white actually, just to keep it simple. Can I grab both things today or is the cabinet a separate order?",
+                "ru": "Думаю, возьму белый — просто и без лишнего. Я могу взять обе вещи сегодня или тумба это отдельный заказ?",
+            },
+            {
+                "en": "Everything in the store is available today — no waiting. You can take it straight to the checkout. Do you need a trolley for the boxes?",
+                "ru": "Всё, что есть в магазине, доступно сегодня — никакого ожидания. Можете сразу идти на кассу. Вам нужна тележка для боксов?",
+            },
+            {
+                "en": "Yeah, that would be great actually. And just to double-check — is there any kind of return policy if something doesn't fit the space?",
+                "ru": "Да, было бы здорово. И уточню — есть какая-нибудь политика возврата, если что-то не подойдёт по размеру?",
+            },
+            {
+                "en": "Thirty days, as long as it's unused and in the original packaging. Just keep your receipt and you're all good.",
+                "ru": "Тридцать дней, при условии что товар не использовался и в оригинальной упаковке. Просто сохраните чек — и всё в порядке.",
+            },
+            {
+                "en": "Perfect, that's really helpful. I think I know what I'm getting. Thanks so much.",
+                "ru": "Отлично, очень полезно. Кажется, я определилась. Большое спасибо.",
+            },
+            {
+                "en": "No problem at all, good luck with it!",
+                "ru": "Пожалуйста, удачи!",
+            },
+        ]
     }
 ];
