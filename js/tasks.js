@@ -4,6 +4,7 @@ import { textFillStativeTasks }             from '../data/tasks/text-fill-stativ
 import { initGrammarContextTask } from './tasks/grammar-context.js';
 import { initTextFillTask }       from './tasks/text-fill.js';
 import { initPhrasalVerbTask }    from './tasks/phrasal-verb.js';
+import { initWantNeedTask }       from './tasks/want-need.js';
 import { phrasalVerbs }           from '../data/phrasal-verbs.js';
 import { saveTaskProgress, fetchCompletedTasks } from './api.js';
 
@@ -78,6 +79,15 @@ export async function initTasks(switchPage) {
             <div class="task-variant-pills">
                 <button class="variant-pill variant-pill--start" id="btn-start-pv">Начать</button>
             </div>
+        </div>
+        <div class="task-group">
+            <div class="task-group-info">
+                <h3 class="task-card-title">💬 Want / Need / Would like</h3>
+                <p class="task-card-desc">AI-упражнения — вставь нужный оборот по контексту</p>
+            </div>
+            <div class="task-variant-pills">
+                <button class="variant-pill variant-pill--start" id="btn-start-wn">Начать</button>
+            </div>
         </div>`;
 
     listEl.innerHTML = pvCard + builtGroups.map(g => `
@@ -136,6 +146,13 @@ export async function initTasks(switchPage) {
         });
         viewContent.appendChild(listBtn);
 
+        switchPage('task-view');
+        document.querySelector('[data-page="tasks"]')?.classList.add('active');
+    });
+
+    document.getElementById('btn-start-wn').addEventListener('click', () => {
+        viewContent.innerHTML = '';
+        initWantNeedTask(viewContent);
         switchPage('task-view');
         document.querySelector('[data-page="tasks"]')?.classList.add('active');
     });
