@@ -3,13 +3,12 @@ const TOKEN_KEY = 'et_token';
 
 function getToken() { return localStorage.getItem(TOKEN_KEY); }
 
-const TARGETS = [
-    { phrase: 'need to',        pattern: 'need to + infinitive' },
-    { phrase: 'want',           pattern: 'want + noun' },
-    { phrase: 'would like to',  pattern: 'would like to + infinitive' },
-    { phrase: 'need',           pattern: 'need + noun' },
-    { phrase: 'want to',        pattern: 'want to + infinitive' },
-    { phrase: 'would like',     pattern: 'would like + noun' },
+const OPTIONS = [
+    { phrase: 'want',          pattern: 'want + noun' },
+    { phrase: 'want to',       pattern: 'want to + infinitive' },
+    { phrase: 'need',          pattern: 'need + noun' },
+    { phrase: 'need to',       pattern: 'need to + infinitive' },
+    { phrase: 'would like to', pattern: 'would like to + infinitive' },
 ];
 
 const SCENARIOS = [
@@ -30,23 +29,13 @@ const SCENARIOS = [
 let targetIdx   = 0;
 let scenarioIdx = 0;
 
-// Accept both base and 3rd-person-singular forms: "need to" ↔ "needs to", "want" ↔ "wants"
-function acceptsAnswer(userInput, target) {
-    const a = userInput.trim().toLowerCase();
-    const t = target.toLowerCase();
-    if (a === t) return true;
-    const words = t.split(' ');
-    const conjugated = [words[0] + 's', ...words.slice(1)].join(' ');
-    return a === conjugated;
-}
-
 export function initWantNeedTask(container) {
     let answered = false;
 
     async function loadNext() {
         answered = false;
 
-        const target   = TARGETS[targetIdx % TARGETS.length];
+        const target   = OPTIONS[targetIdx % OPTIONS.length];
         const scenario = SCENARIOS[scenarioIdx % SCENARIOS.length];
         targetIdx++;
         scenarioIdx++;
@@ -85,26 +74,26 @@ export function initWantNeedTask(container) {
     }
 
     function renderTask(data) {
-        // Replace target phrase in sentence with blank span
         const escaped = data.target.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         const sentenceHtml = data.sentence_en.replace(
             new RegExp(escaped, 'i'),
             '<span class="wn-blank" id="wn-blank">___</span>'
         );
 
+        const optionsHtml = OPTIONS.map(opt => `
+            <button class="wn-option" data-phrase="${opt.phrase}">${opt.phrase}</button>
+        `).join('');
+
         container.innerHTML = `
             <div class="wn-wrap">
                 <p class="wn-label">Контекст</p>
                 <p class="wn-context-text">${data.context_en}</p>
 
-                <p class="wn-label" style="margin-top:20px">Вставьте оборот</p>
+                <p class="wn-label" style="margin-top:20px">Выберите нужный оборот</p>
                 <p class="wn-sentence-text">${sentenceHtml}</p>
 
-                <div class="wn-input-row">
-                    <input class="wn-input" id="wn-input" type="text"
-                        placeholder="need / want / would like…"
-                        autocomplete="off" spellcheck="false">
-                    <button class="wn-submit" id="wn-submit">Проверить →</button>
+                <div class="wn-options" id="wn-options">
+                    ${optionsHtml}
                 </div>
 
                 <div class="wn-result" id="wn-result" style="display:none"></div>
@@ -114,16 +103,24 @@ export function initWantNeedTask(container) {
                 </div>
             </div>`;
 
-        const input     = container.querySelector('#wn-input');
-        const submitBtn = container.querySelector('#wn-submit');
-
-        function checkAnswer() {
-            if (answered) return;
+        container.querySelector('#wn-options').addEventListener('click', (e) => {
+            const btn = e.target.closest('.wn-option');
+            if (!btn || answered) return;
             answered = true;
 
-            const isCorrect = acceptsAnswer(input.value.trim(), data.target);
-            const blankEl   = container.querySelector('#wn-blank');
+            const chosen    = btn.dataset.phrase.toLowerCase();
+            const isCorrect = chosen === data.target.toLowerCase();
 
+            container.querySelectorAll('.wn-option').forEach(b => {
+                b.disabled = true;
+                if (b.dataset.phrase.toLowerCase() === data.target.toLowerCase()) {
+                    b.classList.add('wn-option--correct');
+                } else if (b === btn && !isCorrect) {
+                    b.classList.add('wn-option--wrong');
+                }
+            });
+
+            const blankEl = container.querySelector('#wn-blank');
             if (blankEl) {
                 blankEl.textContent = data.target;
                 blankEl.classList.add(isCorrect ? 'wn-blank--correct' : 'wn-blank--wrong');
@@ -133,9 +130,7 @@ export function initWantNeedTask(container) {
             resultEl.style.display = '';
             resultEl.innerHTML = `
                 <div class="wn-verdict ${isCorrect ? 'wn-verdict--correct' : 'wn-verdict--wrong'}">
-                    ${isCorrect
-                        ? '✓ Правильно!'
-                        : `✗ Неверно — правильный ответ: <b>${data.target}</b>`}
+                    ${isCorrect ? '✓ Правильно!' : `✗ Неверно — правильный ответ: <b>${data.target}</b>`}
                 </div>
                 <div class="wn-translations">
                     <div class="wn-tr-row">
@@ -151,15 +146,10 @@ export function initWantNeedTask(container) {
                     Конструкция: <b>${data.pattern}</b>
                 </div>`;
 
-            input.disabled     = true;
-            submitBtn.disabled = true;
             container.querySelector('#wn-next-wrap').style.display = '';
-        }
+        });
 
-        submitBtn.addEventListener('click', checkAnswer);
-        input.addEventListener('keydown', e => { if (e.key === 'Enter') checkAnswer(); });
         container.querySelector('#wn-next').addEventListener('click', loadNext);
-        input.focus();
     }
 
     loadNext();
