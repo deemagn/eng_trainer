@@ -3,12 +3,20 @@ const TOKEN_KEY = 'et_token';
 
 function getToken() { return localStorage.getItem(TOKEN_KEY); }
 
-const OPTIONS = [
-    { phrase: 'want',          pattern: 'want + noun' },
-    { phrase: 'want to',       pattern: 'want to + infinitive' },
-    { phrase: 'need',          pattern: 'need + noun' },
-    { phrase: 'need to',       pattern: 'need to + infinitive' },
-    { phrase: 'would like to', pattern: 'would like to + infinitive' },
+// Each group: same verb, two forms — with "to" and without "to"
+const VERB_GROUPS = [
+    {
+        without: { phrase: 'want',          pattern: 'want + noun' },
+        with:    { phrase: 'want to',        pattern: 'want to + infinitive' },
+    },
+    {
+        without: { phrase: 'need',          pattern: 'need + noun' },
+        with:    { phrase: 'need to',        pattern: 'need to + infinitive' },
+    },
+    {
+        without: { phrase: 'would like',    pattern: 'would like + noun' },
+        with:    { phrase: 'would like to',  pattern: 'would like to + infinitive' },
+    },
 ];
 
 const SCENARIOS = [
@@ -26,7 +34,7 @@ const SCENARIOS = [
     'financial decision / money',
 ];
 
-let lastTargetIdx   = -1;
+let lastGroupIdx    = -1;
 let lastScenarioIdx = -1;
 
 function pickRandom(arr, lastIdx) {
@@ -41,12 +49,14 @@ export function initWantNeedTask(container) {
     async function loadNext() {
         answered = false;
 
-        const tIdx     = pickRandom(OPTIONS,   lastTargetIdx);
+        const gIdx     = pickRandom(VERB_GROUPS, lastGroupIdx);
         const sIdx     = pickRandom(SCENARIOS, lastScenarioIdx);
-        lastTargetIdx   = tIdx;
+        lastGroupIdx    = gIdx;
         lastScenarioIdx = sIdx;
 
-        const target   = OPTIONS[tIdx];
+        const group    = VERB_GROUPS[gIdx];
+        // Randomly pick: with "to" or without "to"
+        const target   = Math.random() < 0.5 ? group.with : group.without;
         const scenario = SCENARIOS[sIdx];
 
         container.innerHTML = `<div class="wn-wrap"><p class="pv-loading">Генерируем упражнение…</p></div>`;
@@ -71,7 +81,7 @@ export function initWantNeedTask(container) {
             }
             if (!res.ok) throw new Error();
 
-            renderTask(await res.json());
+            renderTask(await res.json(), group);
         } catch {
             container.innerHTML = `
                 <div class="wn-wrap">
@@ -82,27 +92,28 @@ export function initWantNeedTask(container) {
         }
     }
 
-    function renderTask(data) {
+    function renderTask(data, group) {
         const escaped = data.target.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         const sentenceHtml = data.sentence_en.replace(
             new RegExp(escaped, 'i'),
             '<span class="wn-blank" id="wn-blank">___</span>'
         );
 
-        const optionsHtml = OPTIONS.map(opt => `
-            <button class="wn-option" data-phrase="${opt.phrase}">${opt.phrase}</button>
-        `).join('');
+        // Always show exactly 2 options: without-to vs with-to for this verb group
+        const optA = group.without;
+        const optB = group.with;
 
         container.innerHTML = `
             <div class="wn-wrap">
                 <p class="wn-label">Контекст</p>
                 <p class="wn-context-text">${data.context_en}</p>
 
-                <p class="wn-label" style="margin-top:20px">Выберите нужный оборот</p>
+                <p class="wn-label" style="margin-top:20px">Нужна ли частица <b>to</b>?</p>
                 <p class="wn-sentence-text">${sentenceHtml}</p>
 
                 <div class="wn-options" id="wn-options">
-                    ${optionsHtml}
+                    <button class="wn-option" data-phrase="${optA.phrase}">${optA.phrase}</button>
+                    <button class="wn-option" data-phrase="${optB.phrase}">${optB.phrase}</button>
                 </div>
 
                 <div class="wn-result" id="wn-result" style="display:none"></div>
