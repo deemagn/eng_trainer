@@ -136,12 +136,32 @@ export async function initTasks(switchPage) {
         listBtn.className = 'btn-list pv-list-btn';
         listBtn.textContent = 'Весь список';
         listBtn.addEventListener('click', () => {
+            let sorted  = false;
+            const sortBtn = document.getElementById('modal-sort');
+
+            function renderPV() {
+                const items = sorted
+                    ? [...phrasalVerbs].sort((a, b) => a.pv.localeCompare(b.pv))
+                    : phrasalVerbs;
+                document.getElementById('modal-body').innerHTML = items.map(item => `
+                    <div class="list-item">
+                        <span class="en">${item.pv}</span>
+                        <span class="ru">${item.ru}</span>
+                    </div>`).join('');
+            }
+
             document.getElementById('modal-title').textContent = `Phrasal Verbs — ${phrasalVerbs.length}`;
-            document.getElementById('modal-body').innerHTML = phrasalVerbs.map(item => `
-                <div class="list-item">
-                    <span class="en">${item.pv}</span>
-                    <span class="ru">${item.ru}</span>
-                </div>`).join('');
+            sortBtn.style.display = '';
+            sortBtn.textContent   = 'А → Я';
+            sortBtn.classList.remove('active');
+            sortBtn.onclick = () => {
+                sorted = !sorted;
+                sortBtn.textContent = sorted ? 'По порядку' : 'А → Я';
+                sortBtn.classList.toggle('active', sorted);
+                renderPV();
+            };
+
+            renderPV();
             document.getElementById('modal-overlay').classList.add('open');
         });
         viewContent.appendChild(listBtn);

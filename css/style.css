@@ -1092,6 +1092,27 @@ body {
     color: #fff;
 }
 
+.modal-sort {
+    background: rgba(99, 102, 241, 0.12);
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    color: #a5b4fc;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 8px;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.modal-sort:hover { background: rgba(99, 102, 241, 0.25); }
+
+.modal-sort.active {
+    background: rgba(99, 102, 241, 0.3);
+    border-color: rgba(99, 102, 241, 0.8);
+    color: #c7d2fe;
+}
+
 .modal-close {
     background: rgba(255, 255, 255, 0.08);
     border: none;

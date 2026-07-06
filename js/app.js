@@ -365,20 +365,40 @@ function handleTabClick(mode, activeBtn) {
 // ── Modal ─────────────────────────────────────────────────
 
 function openList() {
-    const data = getCurrentDataset();
+    const data    = getCurrentDataset();
     const isVerbs = currentMode === 'verbs';
+    let sorted    = false;
+
+    const sortBtn = document.getElementById('modal-sort');
+
+    function renderItems() {
+        const items = sorted ? [...data].sort((a, b) => a.en.localeCompare(b.en)) : data;
+        modalBody.innerHTML = items.map(item => `
+            <div class="list-item">
+                <span class="en">${item.en}</span>
+                <span class="ru">${item.ru}</span>
+                ${isVerbs ? `<span class="past">${item.past}</span>` : ''}
+            </div>
+        `).join('');
+    }
+
     modalTitle.textContent = `${modalTitles[currentMode]} — ${data.length} ${counts[currentMode]}`;
-    modalBody.innerHTML = data.map(item => `
-        <div class="list-item">
-            <span class="en">${item.en}</span>
-            <span class="ru">${item.ru}</span>
-            ${isVerbs ? `<span class="past">${item.past}</span>` : ''}
-        </div>
-    `).join('');
+    sortBtn.style.display  = '';
+    sortBtn.textContent    = 'А → Я';
+    sortBtn.classList.remove('active');
+    sortBtn.onclick = () => {
+        sorted = !sorted;
+        sortBtn.textContent = sorted ? 'По порядку' : 'А → Я';
+        sortBtn.classList.toggle('active', sorted);
+        renderItems();
+    };
+
+    renderItems();
     modalOverlay.classList.add('open');
 }
 
 function closeList() {
+    document.getElementById('modal-sort').style.display = 'none';
     modalOverlay.classList.remove('open', 'modal-centered');
 }
 
