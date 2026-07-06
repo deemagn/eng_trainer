@@ -3,16 +3,54 @@ const TOKEN_KEY = 'et_token';
 
 function getToken() { return localStorage.getItem(TOKEN_KEY); }
 
+const TARGETS = [
+    { phrase: 'need to',        pattern: 'need to + infinitive' },
+    { phrase: 'want',           pattern: 'want + noun' },
+    { phrase: 'would like to',  pattern: 'would like to + infinitive' },
+    { phrase: 'need',           pattern: 'need + noun' },
+    { phrase: 'want to',        pattern: 'want to + infinitive' },
+    { phrase: 'would like',     pattern: 'would like + noun' },
+];
+
+const SCENARIOS = [
+    'visiting a doctor / health issue',
+    'booking travel tickets or accommodation',
+    'ordering food at a restaurant',
+    'studying or learning something new',
+    'buying something at a shop',
+    'home chores or apartment problem',
+    'planning to meet friends',
+    'gym or sport activity',
+    'phone or computer problem',
+    'planning outdoor activity / weather',
+    'work or career situation',
+    'financial decision / money',
+];
+
+let targetIdx   = 0;
+let scenarioIdx = 0;
+
 export function initWantNeedTask(container) {
     let answered = false;
 
     async function loadNext() {
         answered = false;
+
+        const target   = TARGETS[targetIdx % TARGETS.length];
+        const scenario = SCENARIOS[scenarioIdx % SCENARIOS.length];
+        targetIdx++;
+        scenarioIdx++;
+
         container.innerHTML = `<div class="wn-wrap"><p class="pv-loading">Генерируем упражнение…</p></div>`;
 
         try {
             const res = await fetch(`${API_URL}/api/want-need`, {
-                headers: { 'Authorization': `Bearer ${getToken()}` },
+                method: 'POST',
+                headers: {
+                    'Content-Type':  'application/json',
+                    'Authorization': `Bearer ${getToken()}`,
+                },
+                body: JSON.stringify({ target: target.phrase, pattern: target.pattern, scenario }),
             });
 
             if (res.status === 401) {
