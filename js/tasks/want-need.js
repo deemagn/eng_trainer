@@ -26,8 +26,14 @@ const SCENARIOS = [
     'financial decision / money',
 ];
 
-let targetIdx   = 0;
-let scenarioIdx = 0;
+let lastTargetIdx   = -1;
+let lastScenarioIdx = -1;
+
+function pickRandom(arr, lastIdx) {
+    let idx;
+    do { idx = Math.floor(Math.random() * arr.length); } while (idx === lastIdx && arr.length > 1);
+    return idx;
+}
 
 export function initWantNeedTask(container) {
     let answered = false;
@@ -35,10 +41,13 @@ export function initWantNeedTask(container) {
     async function loadNext() {
         answered = false;
 
-        const target   = OPTIONS[targetIdx % OPTIONS.length];
-        const scenario = SCENARIOS[scenarioIdx % SCENARIOS.length];
-        targetIdx++;
-        scenarioIdx++;
+        const tIdx     = pickRandom(OPTIONS,   lastTargetIdx);
+        const sIdx     = pickRandom(SCENARIOS, lastScenarioIdx);
+        lastTargetIdx   = tIdx;
+        lastScenarioIdx = sIdx;
+
+        const target   = OPTIONS[tIdx];
+        const scenario = SCENARIOS[sIdx];
 
         container.innerHTML = `<div class="wn-wrap"><p class="pv-loading">Генерируем упражнение…</p></div>`;
 
