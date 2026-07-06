@@ -30,6 +30,16 @@ const SCENARIOS = [
 let targetIdx   = 0;
 let scenarioIdx = 0;
 
+// Accept both base and 3rd-person-singular forms: "need to" ↔ "needs to", "want" ↔ "wants"
+function acceptsAnswer(userInput, target) {
+    const a = userInput.trim().toLowerCase();
+    const t = target.toLowerCase();
+    if (a === t) return true;
+    const words = t.split(' ');
+    const conjugated = [words[0] + 's', ...words.slice(1)].join(' ');
+    return a === conjugated;
+}
+
 export function initWantNeedTask(container) {
     let answered = false;
 
@@ -111,7 +121,7 @@ export function initWantNeedTask(container) {
             if (answered) return;
             answered = true;
 
-            const isCorrect = input.value.trim().toLowerCase() === data.target.toLowerCase();
+            const isCorrect = acceptsAnswer(input.value.trim(), data.target);
             const blankEl   = container.querySelector('#wn-blank');
 
             if (blankEl) {
