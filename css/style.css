@@ -2309,8 +2309,25 @@ body {
 
 .reading-body {
     flex: 1;
-    overflow-y: auto;
+    overflow-y: scroll;
     padding-bottom: 16px;
+}
+
+.reading-body::-webkit-scrollbar {
+    width: 4px;
+}
+
+.reading-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.reading-body::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.35);
+    border-radius: 2px;
+}
+
+.reading-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(99, 102, 241, 0.6);
 }
 
 .reading-para {
