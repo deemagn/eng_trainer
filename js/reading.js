@@ -25,19 +25,62 @@ function speak(word) {
     speechSynthesis.speak(utt);
 }
 
-function tokenize(text) {
-    return text.split(' ').map(token => {
-        const m = token.match(/^([^a-zA-Z']*)([a-zA-Z']+)([^a-zA-Z']*)$/);
-        if (!m) return { type: 'punct', raw: token };
-        return { type: 'word', pre: m[1], word: m[2], post: m[3], key: m[2].toLowerCase() };
-    });
-}
+// Build HTML with multi-word phrases detected first (longest match wins)
+function buildParagraphHTML(para, translations) {
+    const phrases = Object.keys(translations)
+        .filter(k => k.includes(' '))
+        .sort((a, b) => b.split(' ').length - a.split(' ').length);
 
-function buildParagraphHTML(para) {
-    return tokenize(para).map(t => {
-        if (t.type === 'punct') return t.raw;
-        return `${t.pre}<span class="rw" data-key="${t.key}">${t.word}</span>${t.post}`;
-    }).join(' ');
+    const parts = para.split(/(\s+)/);
+    const out = [];
+    let i = 0;
+
+    while (i < parts.length) {
+        const part = parts[i];
+
+        if (/^\s+$/.test(part)) { out.push(part); i++; continue; }
+
+        const clean = part.replace(/[^a-zA-Z']/g, '').toLowerCase();
+        if (!clean) { out.push(part); i++; continue; }
+
+        // Try longest phrase first
+        let hit = false;
+        for (const phrase of phrases) {
+            const pw = phrase.split(' ');
+            if (pw[0] !== clean) continue;
+
+            // Collect next pw.length non-space tokens
+            const wIdx = [];
+            let j = i;
+            while (wIdx.length < pw.length && j < parts.length) {
+                if (/^\s+$/.test(parts[j])) { j++; continue; }
+                wIdx.push(j);
+                j++;
+            }
+            if (wIdx.length < pw.length) continue;
+            if (!pw.every((w, k) => parts[wIdx[k]].replace(/[^a-zA-Z']/g, '').toLowerCase() === w)) continue;
+
+            const pre     = parts[wIdx[0]].match(/^[^a-zA-Z']*/)?.[0] ?? '';
+            const post    = parts[wIdx[wIdx.length - 1]].match(/[^a-zA-Z']*$/)?.[0] ?? '';
+            const display = wIdx.map(k => parts[k].replace(/[^a-zA-Z']/g, '')).join(' ');
+
+            out.push(`${pre}<span class="rw" data-key="${phrase}">${display}</span>${post}`);
+            i = j;
+            hit = true;
+            break;
+        }
+
+        if (!hit) {
+            const m = part.match(/^([^a-zA-Z']*)([a-zA-Z']+)([^a-zA-Z']*)$/);
+            out.push(m
+                ? `${m[1]}<span class="rw" data-key="${m[2].toLowerCase()}">${m[2]}</span>${m[3]}`
+                : part
+            );
+            i++;
+        }
+    }
+
+    return out.join('');
 }
 
 function positionTooltip(tooltip, anchor) {
@@ -69,7 +112,7 @@ export function initReading() {
                 <p class="reading-title-ru">${text.titleRu}</p>
             </div>
             <div class="reading-body" id="reading-body">
-                ${text.paragraphs.map(p => `<p class="reading-para">${buildParagraphHTML(p)}</p>`).join('')}
+                ${text.paragraphs.map(p => `<p class="reading-para">${buildParagraphHTML(p, text.translations)}</p>`).join('')}
             </div>
         </div>`;
 
