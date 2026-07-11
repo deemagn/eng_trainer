@@ -7,7 +7,7 @@ export const readingTexts = [
             "Anna wanted to start a new job in the city. She needed to become more independent, because she had always lived with her parents. When she got a job offer, she was really excited and in a good mood all day. This was a big opportunity, and she did not want to turn it down.",
             "But soon she felt anxious. She would like to have more experience, because the new job came with a lot of responsibility. At first she felt vulnerable and a little frustrated, because of all the new tasks. Some days she was upset, and some days she was in a bad mood. She was afraid to make mistakes.",
             "Her boss turned out to be very kind. When Anna could not figure out a problem, her team helped her come up with a good solution. She learned to go along with new ideas instead of fighting them. She was no longer disappointed in herself.",
-            "In the end, Anna ended up loving her job. She was happy that she took the chance. Now she wants to help other new workers, because she remembers how hard the start was.",
+            "Over time, Anna ended up loving her job. She was happy that she took the chance. Now she wants to help other new workers, because she remembers how hard the start was.",
         ],
         translations: {
             'anna':          'Анна',
@@ -103,6 +103,8 @@ export const readingTexts = [
             'longer':        'дольше',
             'disappointed':  'разочарованная',
             'herself':       'себя',
+            'over':          'со временем / над',
+            'time':          'время',
             'end':           'конец',
             'ended':         'в итоге',
             'loving':        'полюбила',
