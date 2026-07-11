@@ -25,7 +25,6 @@ function speak(word) {
     speechSynthesis.speak(utt);
 }
 
-// Build HTML with multi-word phrases detected first (longest match wins)
 function buildParagraphHTML(para, translations) {
     const phrases = Object.keys(translations)
         .filter(k => k.includes(' '))
@@ -37,19 +36,16 @@ function buildParagraphHTML(para, translations) {
 
     while (i < parts.length) {
         const part = parts[i];
-
         if (/^\s+$/.test(part)) { out.push(part); i++; continue; }
 
         const clean = part.replace(/[^a-zA-Z']/g, '').toLowerCase();
         if (!clean) { out.push(part); i++; continue; }
 
-        // Try longest phrase first
         let hit = false;
         for (const phrase of phrases) {
             const pw = phrase.split(' ');
             if (pw[0] !== clean) continue;
 
-            // Collect next pw.length non-space tokens
             const wIdx = [];
             let j = i;
             while (wIdx.length < pw.length && j < parts.length) {
@@ -84,39 +80,25 @@ function buildParagraphHTML(para, translations) {
 }
 
 function positionTooltip(tooltip, anchor) {
-    const r = anchor.getBoundingClientRect();
-    const tw = tooltip.offsetWidth;
+    const r   = anchor.getBoundingClientRect();
+    const tw  = tooltip.offsetWidth;
     const margin = 8;
 
-    // Center above the word
     let left = r.left + r.width / 2 - tw / 2;
-    // Clamp to viewport edges
     left = Math.max(margin, Math.min(left, window.innerWidth - tw - margin));
 
     tooltip.style.left = `${left}px`;
     tooltip.style.top  = `${r.top + window.scrollY - tooltip.offsetHeight - 12}px`;
 
-    // Shift arrow to point at the actual word center
     const arrowLeft = r.left + r.width / 2 - left;
     tooltip.style.setProperty('--arrow-left', `${arrowLeft}px`);
 }
 
 export function initReading() {
-    const text  = readingTexts[0];
     const pageEl = document.getElementById('page-reading');
+    let currentIdx = 0;
 
-    pageEl.innerHTML = `
-        <div class="reading-wrap">
-            <div class="reading-text-header">
-                <h2 class="reading-title">${text.title}</h2>
-                <p class="reading-title-ru">${text.titleRu}</p>
-            </div>
-            <div class="reading-body" id="reading-body">
-                ${text.paragraphs.map(p => `<p class="reading-para">${buildParagraphHTML(p, text.translations)}</p>`).join('')}
-            </div>
-        </div>`;
-
-    // Tooltip lives in body so it's not clipped by overflow:hidden containers
+    // Tooltip lives in body to avoid overflow clipping
     let tooltip = document.getElementById('rw-tooltip');
     if (!tooltip) {
         tooltip = document.createElement('div');
@@ -133,32 +115,63 @@ export function initReading() {
         pageEl.querySelectorAll('.rw.active').forEach(el => el.classList.remove('active'));
     }
 
-    pageEl.querySelector('#reading-body').addEventListener('click', e => {
-        const span = e.target.closest('.rw');
-        if (!span) { hideTooltip(); return; }
+    function renderText(idx) {
+        currentIdx = idx;
+        const text = readingTexts[idx];
 
-        const key         = span.dataset.key;
-        const wordDisplay = span.textContent;
-        const translation = text.translations[key] || '';
+        const pickerHTML = readingTexts.map((t, i) => `
+            <button class="reading-pick-btn ${i === idx ? 'active' : ''}" data-idx="${i}">
+                ${t.title}
+            </button>
+        `).join('');
 
-        speak(wordDisplay);
+        pageEl.innerHTML = `
+            <div class="reading-wrap">
+                <div class="reading-picker" id="reading-picker">${pickerHTML}</div>
+                <div class="reading-text-header">
+                    <h2 class="reading-title">${text.title}</h2>
+                    <p class="reading-title-ru">${text.titleRu}</p>
+                </div>
+                <div class="reading-body" id="reading-body">
+                    ${text.paragraphs.map(p =>
+                        `<p class="reading-para">${buildParagraphHTML(p, text.translations)}</p>`
+                    ).join('')}
+                </div>
+            </div>`;
 
-        rwtWord.textContent = wordDisplay;
-        rwtRu.textContent   = translation || '—';
+        pageEl.querySelector('#reading-picker').addEventListener('click', e => {
+            const btn = e.target.closest('.reading-pick-btn');
+            if (!btn) return;
+            const newIdx = parseInt(btn.dataset.idx);
+            if (newIdx !== currentIdx) { hideTooltip(); renderText(newIdx); }
+        });
 
-        // Show off-screen first to measure, then position
-        tooltip.style.visibility = 'hidden';
-        tooltip.classList.add('visible');
-        positionTooltip(tooltip, span);
-        tooltip.style.visibility = '';
+        pageEl.querySelector('#reading-body').addEventListener('click', e => {
+            const span = e.target.closest('.rw');
+            if (!span) { hideTooltip(); return; }
 
-        pageEl.querySelectorAll('.rw.active').forEach(el => el.classList.remove('active'));
-        span.classList.add('active');
-    });
+            const key         = span.dataset.key;
+            const wordDisplay = span.textContent;
+            const translation = text.translations[key] || '';
+
+            speak(wordDisplay);
+
+            rwtWord.textContent = wordDisplay;
+            rwtRu.textContent   = translation || '—';
+
+            tooltip.style.visibility = 'hidden';
+            tooltip.classList.add('visible');
+            positionTooltip(tooltip, span);
+            tooltip.style.visibility = '';
+
+            pageEl.querySelectorAll('.rw.active').forEach(el => el.classList.remove('active'));
+            span.classList.add('active');
+        });
+    }
 
     document.addEventListener('click', e => {
-        if (!e.target.closest('.rw') && !e.target.closest('#rw-tooltip')) {
-            hideTooltip();
-        }
+        if (!e.target.closest('.rw') && !e.target.closest('#rw-tooltip')) hideTooltip();
     });
+
+    renderText(0);
 }
