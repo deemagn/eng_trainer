@@ -1,11 +1,27 @@
 import { readingTexts } from '../data/reading-texts.js';
 
+let preferredVoice = null;
+
+function loadVoice() {
+    const voices = speechSynthesis.getVoices();
+    preferredVoice =
+        voices.find(v => v.name === 'Google US English') ||
+        voices.find(v => v.lang === 'en-US' && !v.localService) ||
+        voices.find(v => v.lang === 'en-US') ||
+        voices.find(v => v.lang.startsWith('en')) ||
+        null;
+}
+
+speechSynthesis.addEventListener('voiceschanged', loadVoice);
+loadVoice();
+
 function speak(word) {
     if (!window.speechSynthesis) return;
     speechSynthesis.cancel();
     const utt = new SpeechSynthesisUtterance(word);
     utt.lang = 'en-US';
     utt.rate = 0.8;
+    if (preferredVoice) utt.voice = preferredVoice;
     speechSynthesis.speak(utt);
 }
 
