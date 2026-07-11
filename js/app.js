@@ -4,6 +4,7 @@ import { hardWords } from '../data/hard-words.js';
 import { initDialogues } from './dialogues.js';
 import { initTasks }    from './tasks.js';
 import { initAuth }     from './auth.js';
+import { initReading }  from './reading.js';
 import { fetchLearnedWords, addLearnedWord, removeLearnedWord, generateLearnedText } from './api.js';
 
 function isIrregular(verb) {
@@ -441,6 +442,7 @@ navTabs.forEach(tab => tab.addEventListener('click', () => {
 initDialogues();
 initTasks(switchPage);
 initAuth();
+initReading();
 
 document.addEventListener('keydown', (e) => {
     if (e.code === 'Escape') { closeList(); return; }

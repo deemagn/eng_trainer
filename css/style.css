@@ -2270,3 +2270,118 @@ body {
 .eng-toggle input:checked ~ .eng-toggle-label {
     color: #a5b4fc;
 }
+
+/* ── Reading section ──────────────────────────────────────── */
+
+.reading-page {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.reading-wrap {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-width: 680px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 0 16px;
+}
+
+.reading-text-header {
+    padding: 20px 0 12px;
+    flex-shrink: 0;
+}
+
+.reading-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #e2e8f0;
+    margin: 0 0 4px;
+}
+
+.reading-title-ru {
+    font-size: 14px;
+    color: #64748b;
+    margin: 0;
+}
+
+.reading-body {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 16px;
+}
+
+.reading-para {
+    font-size: 17px;
+    line-height: 1.85;
+    color: #cbd5e1;
+    margin: 0 0 20px;
+}
+
+.rw {
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.12s, color 0.12s;
+    padding: 1px 2px;
+}
+
+.rw:hover {
+    background: rgba(99, 102, 241, 0.2);
+    color: #fff;
+}
+
+.rw.active {
+    background: rgba(99, 102, 241, 0.35);
+    color: #c7d2fe;
+}
+
+.reading-popup {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    margin: 0 0 16px;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 14px;
+    min-height: 52px;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.2s, transform 0.2s;
+    pointer-events: none;
+}
+
+.reading-popup.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.rp-word {
+    font-size: 17px;
+    font-weight: 700;
+    color: #a5b4fc;
+}
+
+.rp-sep {
+    color: #475569;
+    font-size: 15px;
+}
+
+.rp-ru {
+    font-size: 15px;
+    color: #94a3b8;
+}
+
+.reading-page {
+    align-items: stretch;
+    justify-content: flex-start;
+    padding-left: 0;
+    padding-right: 0;
+    height: 100vh;
+    min-height: unset;
+    overflow: hidden;
+}
