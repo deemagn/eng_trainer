@@ -35,6 +35,7 @@ export const verbs = [
     { en: "bring",      ru: "приносить",                               past: "brought" },
     { en: "happen",     ru: "случаться",                               past: "happened" },
     { en: "write",      ru: "писать",                                   past: "wrote",       v3: "written" },
+    { en: "wear",       ru: "носить (одежду)",                          past: "wore",        v3: "worn" },
     { en: "sit",        ru: "сидеть",                                   past: "sat" },
     { en: "stand",      ru: "стоять",                                   past: "stood" },
     { en: "lose",       ru: "терять",                                   past: "lost" },
