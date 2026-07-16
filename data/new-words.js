@@ -44,7 +44,7 @@ export const newWords = [
     { en: "to wonder",             ru: "интересоваться, задаваться вопросом" },
     { en: "to start over",         ru: "начать сначала" },
     { en: "either way",            ru: "в любом случае" },
-    { en: "suggest a solulion",            ru: "предлагать решение (как идею, мысль)" },
+    { en: "suggest a solution",            ru: "предлагать решение (как идею, мысль)" },
     { en: "to think it through",   ru: "обдумать хорошенько" },
     { en: "to rush",               ru: "спешить" },
     { en: "employer",              ru: "работодатель" },
