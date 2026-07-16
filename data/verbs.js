@@ -9,6 +9,7 @@ export const verbs = [
     { en: "use",        ru: "использовать",                            past: "used" },
     { en: "find",       ru: "находить",                                past: "found" },
     { en: "give",       ru: "давать",                                   past: "gave",        v3: "given" },
+    { en: "get",        ru: "получать / становиться",                   past: "got" },
     { en: "tell",       ru: "рассказывать",                            past: "told" },
     { en: "work",       ru: "работать",                                past: "worked" },
     { en: "call",       ru: "звонить",                                  past: "called" },
