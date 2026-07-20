@@ -423,5 +423,90 @@ export const dialogues = [
                 "ru": "Пожалуйста, удачи!",
             },
         ]
+    },
+    {
+        "title": "В магазине спортивной одежды",
+        "lines": [
+            {
+                "en": "Hi! I'm looking for a sportswear set for summer, but this heat is so unusual this year, I need something really light.",
+                "ru": "Привет! Я ищу спортивный комплект на лето, но в этом году такая необычная жара, мне нужно что-то очень лёгкое.",
+            },
+            {
+                "en": "Yeah, everyone's saying that! Let me pick out a few options for you — we just got some new breathable fabrics in.",
+                "ru": "Да, все так говорят! Давайте я подберу несколько вариантов — мы только что получили новые дышащие ткани.",
+            },
+            {
+                "en": "Perfect, thank you. Can I try on a couple of things?",
+                "ru": "Отлично, спасибо. Можно примерить несколько вещей?",
+            },
+            {
+                "en": "Of course, the fitting room is right there. Would you like shorts or leggings to start?",
+                "ru": "Конечно, примерочная вот здесь. С чего начнём — шорты или леггинсы?",
+            },
+            {
+                "en": "Let's go with shorts, they seem better for this heat.",
+                "ru": "Давайте шорты, в такую жару они, наверное, лучше.",
+            },
+            {
+                "en": "Good choice. You can pair these shorts with this tank top, they're from the same collection.",
+                "ru": "Хороший выбор. Эти шорты можно сочетать с этим топом — они из одной коллекции.",
+            },
+            {
+                "en": "Oh, I like that. Can I mix and match colors, or do they only sell them together?",
+                "ru": "О, мне нравится. Можно ли смешивать цвета или их продают только комплектом?",
+            },
+            {
+                "en": "You can totally mix and match — a lot of customers pair up different colors depending on their mood.",
+                "ru": "Можно спокойно миксовать — многие покупатели сочетают разные цвета в зависимости от настроения.",
+            },
+            {
+                "en": "Great, I'll try on the blue set first.",
+                "ru": "Отлично, сначала примерю синий комплект.",
+            },
+            {
+                "en": "Take your time, and just let me know if you need a different size.",
+                "ru": "Не торопитесь, и дайте знать, если нужен другой размер.",
+            },
+            {
+                "en": "This top fits well, but the shorts feel a bit tight.",
+                "ru": "Топ сидит хорошо, но шорты немного тесноваты.",
+            },
+            {
+                "en": "No problem, I'll bring a bigger size out for you.",
+                "ru": "Не проблема, я принесу размер побольше.",
+            },
+            {
+                "en": "Thanks. Actually, do you have anything looser, like for running in this crazy heat?",
+                "ru": "Спасибо. Кстати, есть что-то посвободнее, ну, чтобы бегать в эту безумную жару?",
+            },
+            {
+                "en": "Yes, we have a looser fit that just came in last week, very popular already.",
+                "ru": "Да, у нас есть более свободный крой — поступил на прошлой неделе, уже очень популярный.",
+            },
+            {
+                "en": "I'll try that on too then.",
+                "ru": "Тогда я это тоже примерю.",
+            },
+            {
+                "en": "While you're doing that, I'll pick out a matching cap and socks, just in case.",
+                "ru": "Пока вы примеряете, я подберу подходящую кепку и носки — вдруг пригодится.",
+            },
+            {
+                "en": "Sounds good, I trust your choices so far.",
+                "ru": "Отлично, пока что я доверяю вашему вкусу.",
+            },
+            {
+                "en": "These fit better, right? This fabric really holds up well even in high temperatures.",
+                "ru": "Эти сидят лучше, правда? Эта ткань отлично держится даже при высоких температурах.",
+            },
+            {
+                "en": "Yes, much more comfortable! I'll take this set.",
+                "ru": "Да, намного удобнее! Возьму этот комплект.",
+            },
+            {
+                "en": "Great choice, it'll be perfect for this heat wave.",
+                "ru": "Отличный выбор, будет идеально в эту жару.",
+            },
+        ]
     }
 ];
