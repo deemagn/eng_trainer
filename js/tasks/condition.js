@@ -93,7 +93,7 @@ const RULES = {
     },
     3: {
         name: 'Third Conditional',
-        structure: 'If + Past Perfect → would have + verb',
+        structure: 'If + Past Perfect → would have + verb (V3)',
         use: 'Нереальная ситуация в прошлом — то, чего не случилось.',
         example: 'If she had studied harder, she would have passed the exam.',
     },
