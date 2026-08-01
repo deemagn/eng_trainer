@@ -2560,7 +2560,7 @@ body {
 .prep-example-en {
     font-size: 17px;
     font-weight: 500;
-    color: #e2e8f0;
+    color: #0f172a;
     line-height: 1.55;
     margin-bottom: 12px;
     text-align: center;
@@ -2568,7 +2568,7 @@ body {
 
 .prep-example-ru {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.45);
+    color: #64748b;
     line-height: 1.5;
     text-align: center;
 }
