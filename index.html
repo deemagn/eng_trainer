@@ -33,6 +33,7 @@
             <button class="tab-btn" id="btn-new">Новое</button>
             <button class="tab-btn" id="btn-hard">Сложное</button>
             <button class="tab-btn" id="btn-prep">Prepositional</button>
+            <button class="tab-btn" id="btn-pictures">Картинки</button>
         </div>
         <div class="verb-filter" id="verb-filter">
             <button class="verb-filter-btn active" data-filter="all">Все</button>
@@ -52,8 +53,9 @@
 
         <div class="card-container" id="card-wrapper">
             <div class="card" id="card-element">
-                <div class="card-face">
+                <div class="card-face" id="card-front-face">
                     <div class="card-badge" id="card-badge">Глагол</div>
+                    <img id="card-img" alt="" style="display:none">
                     <h2 id="text-front">...</h2>
                     <span class="card-hint">нажмите, чтобы перевернуть</span>
                 </div>
