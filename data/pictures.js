@@ -95,6 +95,24 @@ export const pictureWords = [
     { word: 'socket',         ru: 'розетка',      group: 'Home' },
     { word: 'switch',         ru: 'выключатель',  group: 'Home' },
 
+    // Jobs
+    { word: 'accountant',  ru: 'бухгалтер',    group: 'Jobs' },
+    { word: 'architect',   ru: 'архитектор',   group: 'Jobs' },
+    { word: 'baker',       ru: 'пекарь',       group: 'Jobs' },
+    { word: 'cashier',     ru: 'кассир',       group: 'Jobs' },
+    { word: 'dentist',     ru: 'стоматолог',   group: 'Jobs' },
+    { word: 'doctor',      ru: 'врач',         group: 'Jobs' },
+    { word: 'engineer',    ru: 'инженер',      group: 'Jobs' },
+    { word: 'firefighter', ru: 'пожарный',     group: 'Jobs' },
+    { word: 'hairdresser', ru: 'парикмахер',   group: 'Jobs' },
+    { word: 'mechanic',    ru: 'механик',      group: 'Jobs' },
+    { word: 'nurse',       ru: 'медсестра',    group: 'Jobs' },
+    { word: 'programmer',  ru: 'программист',  group: 'Jobs' },
+    { word: 'psychologist',ru: 'психолог',     group: 'Jobs' },
+    { word: 'scientist',   ru: 'учёный',       group: 'Jobs' },
+    { word: 'surgeon',     ru: 'хирург',       group: 'Jobs' },
+    { word: 'vet',         ru: 'ветеринар',    group: 'Jobs' },
+
     // Fixtures
     { word: 'handle', ru: 'ручка',  group: 'Home' },
     { word: 'hinge',  ru: 'петля',  group: 'Home' },
