@@ -1,7 +1,6 @@
 import { verbs } from '../data/verbs.js';
 import { newWords } from '../data/new-words.js';
 import { hardWords } from '../data/hard-words.js';
-import { prepositionalVerbs } from '../data/prepositional-verbs.js';
 import { pictureWords } from '../data/pictures.js';
 import { initDialogues } from './dialogues.js';
 import { initTasks }    from './tasks.js';
@@ -21,9 +20,9 @@ function isIrregular(verb) {
 }
 
 const irregularVerbs = verbs.filter(isIrregular);
-const labels      = { verbs: 'Глагол', new: 'Новое', hard: 'Сложное', prep: 'Предлог', pictures: 'Картинка' };
-const counts      = { verbs: 'глаголов', new: 'слов', hard: 'слов', prep: 'глаголов', pictures: 'слов' };
-const modalTitles = { verbs: 'Глаголы', new: 'Новые слова', hard: 'Сложные слова', prep: 'Prepositional Verbs', pictures: 'Картинки' };
+const labels      = { verbs: 'Глагол', new: 'Новое', hard: 'Сложное', pictures: 'Картинка' };
+const counts      = { verbs: 'глаголов', new: 'слов', hard: 'слов', pictures: 'слов' };
+const modalTitles = { verbs: 'Глаголы', new: 'Новые слова', hard: 'Сложные слова', pictures: 'Картинки' };
 
 let currentMode   = 'verbs';
 let verbFilter    = 'all'; // 'all' | 'irregular' | 'learned'
@@ -32,7 +31,6 @@ let currentItem   = null;
 let learnedVerbs  = new Set();
 let learnedHard   = new Set();
 let learnedNew    = new Set();
-let learnedPrep     = new Set();
 let learnedPictures = new Set();
 let preferredVoice = null;
 
@@ -63,10 +61,6 @@ function getCurrentDataset() {
         if (verbFilter === 'learned') return hardWords.filter(w => learnedHard.has(w.en));
         return hardWords.filter(w => !learnedHard.has(w.en));
     }
-    if (currentMode === 'prep') {
-        if (verbFilter === 'learned') return prepositionalVerbs.filter(w => learnedPrep.has(w.en));
-        return prepositionalVerbs.filter(w => !learnedPrep.has(w.en));
-    }
     if (currentMode === 'pictures') {
         if (verbFilter === 'learned') return pictureWords.filter(w => learnedPictures.has(w.word));
         if (verbFilter !== 'all') return pictureWords.filter(w => w.group === verbFilter && !learnedPictures.has(w.word));
@@ -85,7 +79,6 @@ const subtitle     = document.getElementById('subtitle');
 const btnVerbs     = document.getElementById('btn-verbs');
 const btnNew       = document.getElementById('btn-new');
 const btnHard      = document.getElementById('btn-hard');
-const btnPrep       = document.getElementById('btn-prep');
 const btnPictures   = document.getElementById('btn-pictures');
 const cardImg       = document.getElementById('card-img');
 const cardFrontFace = document.getElementById('card-front-face');
@@ -149,7 +142,7 @@ function speakCurrentItem() {
 }
 
 function updateLearnedBtn() {
-    if ((currentMode !== 'verbs' && currentMode !== 'hard' && currentMode !== 'new' && currentMode !== 'prep' && currentMode !== 'pictures') || !currentItem) {
+    if ((currentMode !== 'verbs' && currentMode !== 'hard' && currentMode !== 'new' && currentMode !== 'pictures') || !currentItem) {
         btnLearnedAction.style.display = 'none';
         return;
     }
@@ -221,7 +214,7 @@ function renderLearnedList(data) {
     btnSpeak.style.display      = 'none';
     engToggleEl.style.display   = 'none';
     counter.textContent         = '';
-    subtitle.textContent = (currentMode === 'verbs' || currentMode === 'prep')
+    subtitle.textContent = currentMode === 'verbs'
         ? `Выучено: ${data.length} глаголов`
         : `Выучено: ${data.length} слов`;
 
@@ -241,14 +234,6 @@ function renderLearnedList(data) {
                     <span class="ll-en">${v.word}</span>
                     <span class="ll-ru">${v.ru}</span>
                     <button class="ll-return-btn" data-en="${v.word}">Вернуть</button>
-                </div>`;
-        }
-        if (currentMode === 'prep') {
-            return `
-                <div class="ll-row">
-                    <span class="ll-en">${v.en}</span>
-                    <span class="ll-ru ll-example">${v.example}</span>
-                    <button class="ll-return-btn" data-en="${v.en}">Вернуть</button>
                 </div>`;
         }
         if (currentMode === 'hard' || currentMode === 'new') {
@@ -290,9 +275,6 @@ function renderLearnedList(data) {
             } else if (currentMode === 'new') {
                 await removeLearnedWord('new', btn.dataset.en);
                 learnedNew.delete(btn.dataset.en);
-            } else if (currentMode === 'prep') {
-                await removeLearnedWord('prep', btn.dataset.en);
-                learnedPrep.delete(btn.dataset.en);
             } else if (currentMode === 'pictures') {
                 await removeLearnedWord('pictures', btn.dataset.en);
                 learnedPictures.delete(btn.dataset.en);
@@ -327,7 +309,7 @@ function clearEmptyState() {
     btnNext.style.display = '';
     btnShowList.style.display = '';
     btnSpeak.style.display = '';
-    engToggleEl.style.display = (currentMode === 'prep' || currentMode === 'pictures') ? 'none' : '';
+    engToggleEl.style.display = currentMode === 'pictures' ? 'none' : '';
 }
 
 function updateUI() {
@@ -383,10 +365,7 @@ function updateUI() {
             cardImg.style.display = 'none';
             cardFrontFace.classList.remove('card-face--image', 'card-face--loading');
             textFront.innerText = isEnglishFirst ? item.en : item.ru;
-            if (currentMode === 'prep') {
-                textFront.innerText = item.en;
-                textBack.innerHTML  = `<p class="prep-example-en">${item.example}</p><p class="prep-example-ru">${item.exampleRu}</p>`;
-            } else if (currentMode === 'new' || currentMode === 'hard') {
+            if (currentMode === 'new' || currentMode === 'hard') {
                 textBack.innerHTML = `<h2>${isEnglishFirst ? item.ru : item.en}</h2>`;
             } else {
                 textBack.innerHTML = verbBackHTML(item, isEnglishFirst);
@@ -417,7 +396,7 @@ function handleTabClick(mode, activeBtn) {
     currentMode = mode;
     sessionCount = 0;
     currentItem = null;
-    [btnVerbs, btnNew, btnHard, btnPrep, btnPictures].forEach(btn => btn.classList.remove('active'));
+    [btnVerbs, btnNew, btnHard, btnPictures].forEach(btn => btn.classList.remove('active'));
     activeBtn.classList.add('active');
 
     if (mode === 'pictures') {
@@ -431,7 +410,7 @@ function handleTabClick(mode, activeBtn) {
         verbFilterEl.style.display = 'flex';
         attachFilterListeners();
     } else {
-        const showFilter = mode === 'verbs' || mode === 'hard' || mode === 'new' || mode === 'prep';
+        const showFilter = mode === 'verbs' || mode === 'hard' || mode === 'new';
         verbFilterEl.style.display = showFilter ? 'flex' : 'none';
 
         const irregularBtn = verbFilterEl.querySelector('[data-filter="irregular"]');
@@ -445,7 +424,7 @@ function handleTabClick(mode, activeBtn) {
         }
     }
 
-    if (mode !== 'verbs' && mode !== 'hard' && mode !== 'new' && mode !== 'prep' && mode !== 'pictures') btnLearnedAction.style.display = 'none';
+    if (mode !== 'verbs' && mode !== 'hard' && mode !== 'new' && mode !== 'pictures') btnLearnedAction.style.display = 'none';
     updateSubtitle();
     updateUI();
 }
@@ -455,7 +434,6 @@ function handleTabClick(mode, activeBtn) {
 function openList() {
     const data    = getCurrentDataset();
     const isVerbs    = currentMode === 'verbs';
-    const isPrep     = currentMode === 'prep';
     const isPictures = currentMode === 'pictures';
     let sorted    = false;
 
@@ -471,12 +449,6 @@ function openList() {
                     <span class="en">${item.word}</span>
                     <span class="ru">${item.ru}</span>
                     ${item.group ? `<span class="past">${item.group}</span>` : ''}
-                </div>`;
-            }
-            if (isPrep) {
-                return `<div class="list-item list-item--prep">
-                    <span class="en">${item.en}</span>
-                    <span class="ru prep-list-example">${item.example}</span>
                 </div>`;
             }
             return `<div class="list-item">
@@ -566,7 +538,6 @@ cardWrapper.addEventListener('click',   () => cardElement.classList.toggle('is-f
 btnVerbs.addEventListener('click',      () => handleTabClick('verbs',   btnVerbs));
 btnNew.addEventListener('click',         () => handleTabClick('new',     btnNew));
 btnHard.addEventListener('click',       () => handleTabClick('hard',    btnHard));
-btnPrep.addEventListener('click',       () => handleTabClick('prep',     btnPrep));
 btnPictures.addEventListener('click',  () => handleTabClick('pictures', btnPictures));
 btnNext.addEventListener('click', updateUI);
 btnSpeak.addEventListener('click', speakCurrentItem);
@@ -579,8 +550,8 @@ attachFilterListeners();
 
 btnLearnedAction.addEventListener('click', async () => {
     if (!currentItem) return;
-    const category   = currentMode === 'hard' ? 'hard' : currentMode === 'new' ? 'new' : currentMode === 'prep' ? 'prep' : currentMode === 'pictures' ? 'pictures' : 'verbs';
-    const learnedSet = currentMode === 'hard' ? learnedHard : currentMode === 'new' ? learnedNew : currentMode === 'prep' ? learnedPrep : currentMode === 'pictures' ? learnedPictures : learnedVerbs;
+    const category   = currentMode === 'hard' ? 'hard' : currentMode === 'new' ? 'new' : currentMode === 'pictures' ? 'pictures' : 'verbs';
+    const learnedSet = currentMode === 'hard' ? learnedHard : currentMode === 'new' ? learnedNew : currentMode === 'pictures' ? learnedPictures : learnedVerbs;
     const itemKey    = currentMode === 'pictures' ? currentItem.word : currentItem.en;
     if (verbFilter === 'learned') {
         await removeLearnedWord(category, itemKey);
@@ -600,13 +571,11 @@ Promise.all([
     fetchLearnedWords('verbs'),
     fetchLearnedWords('hard'),
     fetchLearnedWords('new'),
-    fetchLearnedWords('prep'),
     fetchLearnedWords('pictures'),
-]).then(([verbSet, hardSet, newSet, prepSet, picturesSet]) => {
+]).then(([verbSet, hardSet, newSet, picturesSet]) => {
     learnedVerbs    = verbSet;
     learnedHard     = hardSet;
     learnedNew      = newSet;
-    learnedPrep     = prepSet;
     learnedPictures = picturesSet;
     updateUI();
 });
