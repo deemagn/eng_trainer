@@ -179,7 +179,7 @@ function openTextGenModal(data) {
         document.getElementById('tg-submit').addEventListener('click', async () => {
             const count = parseInt(range.value);
             const picked = [...data].sort(() => Math.random() - 0.5).slice(0, count);
-            const words = picked.map(v => v.en);
+            const words = picked.map(v => v.word ?? v.en);
 
             modalTitle.textContent = 'Генерирую текст…';
             modalBody.innerHTML = '<div class="text-gen-loading"><span></span><span></span><span></span></div>';
@@ -260,7 +260,7 @@ function renderLearnedList(data) {
     document.getElementById('btn-random-pick')?.addEventListener('click', () => {
         const picked = [...data].sort(() => Math.random() - 0.5).slice(0, 3);
         document.getElementById('random-pick-display').innerHTML =
-            picked.map(v => `<span class="random-word">${v.en}</span>`).join('');
+            picked.map(v => `<span class="random-word">${v.word ?? v.en}</span>`).join('');
     });
 
     document.getElementById('btn-text-gen')?.addEventListener('click', () => {
@@ -315,7 +315,7 @@ function clearEmptyState() {
 function updateUI() {
     const data = getCurrentDataset();
 
-    if (verbFilter === 'learned' && (currentMode === 'verbs' || currentMode === 'hard' || currentMode === 'new')) {
+    if (verbFilter === 'learned' && (currentMode === 'verbs' || currentMode === 'hard' || currentMode === 'new' || currentMode === 'pictures')) {
         if (data.length === 0) {
             const msg = currentMode === 'verbs'
                 ? 'Выученных глаголов пока нет — нажми «✓ Выучено» на карточке'
