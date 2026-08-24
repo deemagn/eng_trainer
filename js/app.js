@@ -370,7 +370,8 @@ function updateUI() {
             cardFrontFace.classList.add('card-face--image', 'card-face--loading');
             cardImg.onload  = () => cardFrontFace.classList.remove('card-face--loading');
             cardImg.onerror = () => cardFrontFace.classList.remove('card-face--loading');
-            cardImg.src = item.picturelink;
+            const fname = item.word.replace(/ /g, '_') + '.jpg';
+            cardImg.src = `https://api.goodnewsenglish.com/static/pictures/${fname}`;
             textBack.innerHTML = `<h2>${item.word}</h2><p class="pic-card-ru">${item.ru}</p>${item.group ? `<span class="pic-card-cat">${item.group}</span>` : ''}`;
         } else {
             textFront.style.display = '';
