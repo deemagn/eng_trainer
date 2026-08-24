@@ -355,6 +355,11 @@ function updateUI() {
     cardWrapper.classList.add('switching');
     cardElement.classList.remove('is-flipped');
 
+    if (currentMode === 'pictures') {
+        cardImg.src = '';
+        cardFrontFace.classList.add('card-face--loading');
+    }
+
     setTimeout(() => {
         const item = data[Math.floor(Math.random() * data.length)];
         const isEnglishFirst = engFirstToggle.checked || Math.random() > 0.5;
