@@ -409,14 +409,15 @@ function handleTabClick(mode, activeBtn) {
         const showFilter = mode === 'verbs' || mode === 'hard' || mode === 'new';
         verbFilterEl.style.display = showFilter ? 'flex' : 'none';
 
-        const irregularBtn = verbFilterEl.querySelector('[data-filter="irregular"]');
-        if (irregularBtn) irregularBtn.style.display = mode === 'verbs' ? '' : 'none';
-
-        if (mode !== 'verbs' && verbFilter === 'irregular') {
+        if (showFilter) {
             verbFilter = 'all';
-            verbFilterEl.querySelectorAll('.verb-filter-btn').forEach(b => {
-                b.classList.toggle('active', b.dataset.filter === 'all');
-            });
+            verbFilterEl.innerHTML = [
+                '<button class="verb-filter-btn active" data-filter="all">Все</button>',
+                '<button class="verb-filter-btn" data-filter="irregular">Неправильные</button>',
+                '<button class="verb-filter-btn" data-filter="learned">Выученные</button>',
+            ].join('');
+            verbFilterEl.querySelector('[data-filter="irregular"]').style.display = mode === 'verbs' ? '' : 'none';
+            attachFilterListeners();
         }
     }
 
