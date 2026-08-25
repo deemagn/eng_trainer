@@ -17,7 +17,7 @@ export const pictureWords = [
     { word: 'dishwasher',    ru: 'посудомойка',       group: 'Home' },
     { word: 'fork',          ru: 'вилка',             group: 'Home' },
     { word: 'spoon',         ru: 'ложка',             group: 'Home' },
-    { word: 'plate',         ru: 'тарелка',           group: 'Home' },
+    { word: 'stove',         ru: 'плита',              group: 'Home' },
     { word: 'bowl',          ru: 'миска',             group: 'Home' },
     { word: 'mug',           ru: 'кружка',            group: 'Home' },
     { word: 'tray',          ru: 'поднос',            group: 'Home' },
