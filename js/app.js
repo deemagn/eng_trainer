@@ -1,6 +1,6 @@
 import { verbs } from '../data/verbs.js';
 import { newWords } from '../data/new-words.js';
-import { hardWords } from '../data/hard-words.js';
+import { hardPictureWords } from '../data/hard-pictures.js';
 import { pictureWords } from '../data/pictures.js';
 import { initDialogues } from './dialogues.js';
 import { initTasks }    from './tasks.js';
@@ -22,7 +22,7 @@ function isIrregular(verb) {
 const irregularVerbs = verbs.filter(isIrregular);
 const labels      = { verbs: 'Глагол', new: 'Новое', hard: 'Сложное', pictures: 'Картинка' };
 const counts      = { verbs: 'глаголов', new: 'слов', hard: 'слов', pictures: 'слов' };
-const modalTitles = { verbs: 'Глаголы', new: 'Новые слова', hard: 'Сложные слова', pictures: 'Картинки' };
+const modalTitles = { verbs: 'Глаголы', new: 'Новые слова', hard: 'Сложное', pictures: 'Картинки' };
 
 let currentMode   = 'verbs';
 let verbFilter    = 'all'; // 'all' | 'irregular' | 'learned'
@@ -58,8 +58,9 @@ function getCurrentDataset() {
         return newWords.filter(w => !learnedNew.has(w.en));
     }
     if (currentMode === 'hard') {
-        if (verbFilter === 'learned') return hardWords.filter(w => learnedHard.has(w.en));
-        return hardWords.filter(w => !learnedHard.has(w.en));
+        if (verbFilter === 'learned') return hardPictureWords.filter(w => learnedHard.has(w.word));
+        if (verbFilter !== 'all') return hardPictureWords.filter(w => w.group === verbFilter && !learnedHard.has(w.word));
+        return hardPictureWords.filter(w => !learnedHard.has(w.word));
     }
     if (currentMode === 'pictures') {
         if (verbFilter === 'learned') return pictureWords.filter(w => learnedPictures.has(w.word));
@@ -129,7 +130,7 @@ function speakCurrentItem() {
         const v3   = (currentItem.v3 || currentItem.past).split('/')[0];
         text = currentItem.tts ?? `${currentItem.en}, ${past}, ${v3}`;
     } else {
-        text = currentMode === 'pictures' ? currentItem.word : currentItem.en;
+        text = (currentMode === 'pictures' || currentMode === 'hard') ? currentItem.word : currentItem.en;
     }
     const utt = new SpeechSynthesisUtterance(text);
     utt.lang = 'en-US';
@@ -228,7 +229,7 @@ function renderLearnedList(data) {
         </div>` : '';
 
     learnedList.innerHTML = randomBlock + data.map(v => {
-        if (currentMode === 'pictures') {
+        if (currentMode === 'pictures' || currentMode === 'hard') {
             return `
                 <div class="ll-row">
                     <span class="ll-en">${v.word}</span>
@@ -236,7 +237,7 @@ function renderLearnedList(data) {
                     <button class="ll-return-btn" data-en="${v.word}">Вернуть</button>
                 </div>`;
         }
-        if (currentMode === 'hard' || currentMode === 'new') {
+        if (currentMode === 'new') {
             return `
                 <div class="ll-row">
                     <span class="ll-en">${v.en}</span>
@@ -309,7 +310,7 @@ function clearEmptyState() {
     btnNext.style.display = '';
     btnShowList.style.display = '';
     btnSpeak.style.display = '';
-    engToggleEl.style.display = currentMode === 'pictures' ? 'none' : '';
+    engToggleEl.style.display = (currentMode === 'pictures' || currentMode === 'hard') ? 'none' : '';
 }
 
 function updateUI() {
@@ -346,7 +347,7 @@ function updateUI() {
         counter.textContent = `показано за сессию: ${sessionCount}`;
         cardBadge.textContent = labels[currentMode];
 
-        if (currentMode === 'pictures') {
+        if (currentMode === 'pictures' || currentMode === 'hard') {
             textFront.style.display = 'none';
             cardImg.style.display = '';
             cardImg.src = '';
@@ -354,14 +355,15 @@ function updateUI() {
             cardImg.onload  = () => cardFrontFace.classList.remove('card-face--loading');
             cardImg.onerror = () => cardFrontFace.classList.remove('card-face--loading');
             const fname = item.word.replace(/ /g, '_') + '.jpg';
-            cardImg.src = `https://api.goodnewsenglish.com/static/pictures/${fname}`;
+            const folder = currentMode === 'hard' ? 'hard' : 'pictures';
+            cardImg.src = `https://api.goodnewsenglish.com/static/${folder}/${fname}`;
             textBack.innerHTML = `<h2>${item.word}</h2><p class="pic-card-ru">${item.ru}</p>${item.group ? `<span class="pic-card-cat">${item.group}</span>` : ''}`;
         } else {
             textFront.style.display = '';
             cardImg.style.display = 'none';
             cardFrontFace.classList.remove('card-face--image', 'card-face--loading');
             textFront.innerText = isEnglishFirst ? item.en : item.ru;
-            if (currentMode === 'new' || currentMode === 'hard') {
+            if (currentMode === 'new') {
                 textBack.innerHTML = `<h2>${isEnglishFirst ? item.ru : item.en}</h2>`;
             } else {
                 textBack.innerHTML = verbBackHTML(item, isEnglishFirst);
@@ -395,9 +397,10 @@ function handleTabClick(mode, activeBtn) {
     [btnVerbs, btnNew, btnHard, btnPictures].forEach(btn => btn.classList.remove('active'));
     activeBtn.classList.add('active');
 
-    if (mode === 'pictures') {
+    if (mode === 'pictures' || mode === 'hard') {
         verbFilter = 'all';
-        const groups = [...new Set(pictureWords.map(w => w.group).filter(Boolean))];
+        const wordData = mode === 'hard' ? hardPictureWords : pictureWords;
+        const groups = [...new Set(wordData.map(w => w.group).filter(Boolean))];
         verbFilterEl.innerHTML = [
             '<button class="verb-filter-btn active" data-filter="all">Все</button>',
             ...groups.map(g => `<button class="verb-filter-btn" data-filter="${g}">${g}</button>`),
@@ -406,7 +409,7 @@ function handleTabClick(mode, activeBtn) {
         verbFilterEl.style.display = 'flex';
         attachFilterListeners();
     } else {
-        const showFilter = mode === 'verbs' || mode === 'hard' || mode === 'new';
+        const showFilter = mode === 'verbs' || mode === 'new';
         verbFilterEl.style.display = showFilter ? 'flex' : 'none';
 
         if (showFilter) {
@@ -431,7 +434,7 @@ function handleTabClick(mode, activeBtn) {
 function openList() {
     const data    = getCurrentDataset();
     const isVerbs    = currentMode === 'verbs';
-    const isPictures = currentMode === 'pictures';
+    const isPictures = currentMode === 'pictures' || currentMode === 'hard';
     let sorted    = false;
 
     const sortBtn = document.getElementById('modal-sort');
@@ -549,7 +552,7 @@ btnLearnedAction.addEventListener('click', async () => {
     if (!currentItem) return;
     const category   = currentMode === 'hard' ? 'hard' : currentMode === 'new' ? 'new' : currentMode === 'pictures' ? 'pictures' : 'verbs';
     const learnedSet = currentMode === 'hard' ? learnedHard : currentMode === 'new' ? learnedNew : currentMode === 'pictures' ? learnedPictures : learnedVerbs;
-    const itemKey    = currentMode === 'pictures' ? currentItem.word : currentItem.en;
+    const itemKey    = (currentMode === 'pictures' || currentMode === 'hard') ? currentItem.word : currentItem.en;
     if (verbFilter === 'learned') {
         await removeLearnedWord(category, itemKey);
         learnedSet.delete(itemKey);
