@@ -2556,6 +2556,30 @@ body {
     margin-top: 4px;
 }
 
+/* ── Passive Voice Trainer ───────────────────────────── */
+.pv-active-sentence {
+    font-size: 22px;
+    font-weight: 700;
+    color: #e2e8f0;
+    line-height: 1.5;
+    text-align: center;
+    margin: 0 0 36px;
+    padding: 0 8px;
+}
+
+.pv-result {
+    width: 100%;
+}
+
+.pv-passive-sentence {
+    font-size: 18px;
+    font-weight: 500;
+    color: #4ade80;
+    text-align: center;
+    margin: 0 0 20px;
+    padding: 0 8px;
+}
+
 /* ── Picture flashcards ───────────────────────────────── */
 .card-face--image {
     padding: 0;

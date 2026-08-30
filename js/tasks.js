@@ -6,6 +6,7 @@ import { initTextFillTask }       from './tasks/text-fill.js';
 import { initPhrasalVerbTask }    from './tasks/phrasal-verb.js';
 import { initWantNeedTask }       from './tasks/want-need.js';
 import { initConditionTask }      from './tasks/condition.js';
+import { initPassiveVoiceTask }   from './tasks/passive-voice.js';
 import { phrasalVerbs }           from '../data/phrasal-verbs.js';
 import { saveTaskProgress, fetchCompletedTasks } from './api.js';
 
@@ -74,6 +75,15 @@ export async function initTasks(switchPage) {
     const pvCard = `
         <div class="task-group">
             <div class="task-group-info">
+                <h3 class="task-card-title">🔄 Passive Voice Trainer</h3>
+                <p class="task-card-desc">AI генерирует предложение — переведи в пассивный залог</p>
+            </div>
+            <div class="task-variant-pills">
+                <button class="variant-pill variant-pill--start" id="btn-start-passive">Начать</button>
+            </div>
+        </div>
+        <div class="task-group">
+            <div class="task-group-info">
                 <h3 class="task-card-title">🔗 Phrasal Verbs</h3>
                 <p class="task-card-desc">AI-упражнения — фразовые глаголы в контексте</p>
             </div>
@@ -136,6 +146,13 @@ export async function initTasks(switchPage) {
 
         const pill = e.target.closest('.variant-pill');
         if (pill)   { const item = variantMap[pill.dataset.id];   if (item) openTask(item); }
+    });
+
+    document.getElementById('btn-start-passive').addEventListener('click', () => {
+        viewContent.innerHTML = '';
+        initPassiveVoiceTask(viewContent);
+        switchPage('task-view');
+        document.querySelector('[data-page="tasks"]')?.classList.add('active');
     });
 
     document.getElementById('btn-start-pv').addEventListener('click', () => {
