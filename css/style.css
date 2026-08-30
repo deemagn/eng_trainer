@@ -2567,6 +2567,14 @@ body {
     padding: 0 8px;
 }
 
+.pv-translation {
+    font-size: 15px;
+    color: #64748b;
+    text-align: center;
+    margin: -24px 0 28px;
+    padding: 0 8px;
+}
+
 .pv-result {
     width: 100%;
 }

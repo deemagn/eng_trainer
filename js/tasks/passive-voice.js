@@ -189,6 +189,7 @@ export function initPassiveVoiceTask(container) {
         container.innerHTML = `
             <div class="cond-wrap">
                 <p class="pv-active-sentence">${data.active}</p>
+                <p class="pv-translation">${data.translation}</p>
 
                 <div class="cond-actions">
                     <button class="cond-btn cond-btn--ok"  id="pv-ok"  title="Знаю пассивный вариант">✓</button>
