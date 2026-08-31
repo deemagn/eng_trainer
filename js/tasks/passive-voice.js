@@ -144,6 +144,23 @@ function pickRound() {
     return { tense, modal };
 }
 
+function openRulesModal() {
+    const overlay = document.getElementById('modal-overlay');
+    const titleEl = document.getElementById('modal-title');
+    const bodyEl  = document.getElementById('modal-body');
+    document.getElementById('modal-sort').style.display = 'none';
+
+    titleEl.textContent = 'Passive Voice — правила';
+    bodyEl.innerHTML = Object.values(RULES).map(rule => `
+        <div class="pv-rule-item">
+            <div class="pv-rule-item-name">${rule.name}</div>
+            <div class="pv-rule-item-formula">${rule.formula}</div>
+            <div class="pv-rule-item-example"><i>${rule.example}</i></div>
+        </div>`).join('');
+
+    overlay.classList.add('open');
+}
+
 export function initPassiveVoiceTask(container) {
     let answered = false;
 
@@ -195,6 +212,7 @@ export function initPassiveVoiceTask(container) {
                     <button class="cond-btn cond-btn--ok"  id="pv-ok"  title="Знаю пассивный вариант">✓</button>
                     <button class="cond-btn cond-btn--bad" id="pv-bad" title="Не знаю">✗</button>
                 </div>
+                <button class="pv-rules-btn" id="pv-rules">Правила</button>
 
                 <div class="pv-result" id="pv-result">
                     <p class="pv-passive-sentence">${data.passive}</p>
@@ -226,6 +244,7 @@ export function initPassiveVoiceTask(container) {
         container.querySelector('#pv-ok').addEventListener('click', reveal);
         container.querySelector('#pv-bad').addEventListener('click', reveal);
         container.querySelector('#pv-next').addEventListener('click', loadNext);
+        container.querySelector('#pv-rules').addEventListener('click', openRulesModal);
     }
 
     loadNext();

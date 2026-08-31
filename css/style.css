@@ -2575,6 +2575,44 @@ body {
     padding: 0 8px;
 }
 
+.pv-rules-btn {
+    background: none;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    color: #94a3b8;
+    font-size: 13px;
+    font-family: inherit;
+    padding: 6px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-bottom: 24px;
+    transition: border-color 0.15s, color 0.15s;
+}
+.pv-rules-btn:hover { border-color: #94a3b8; color: #cbd5e1; }
+
+.pv-rule-item {
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.pv-rule-item:last-child { border-bottom: none; }
+
+.pv-rule-item-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #a5b4fc;
+}
+.pv-rule-item-formula {
+    font-size: 13px;
+    font-family: monospace;
+    color: #c7d2fe;
+}
+.pv-rule-item-example {
+    font-size: 13px;
+    color: #64748b;
+}
+
 .pv-result {
     width: 100%;
 }
