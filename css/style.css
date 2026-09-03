@@ -682,17 +682,14 @@ body {
 
 /* ── Verb filter subtabs ── */
 .verb-filter {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
     gap: 8px;
     margin-bottom: 20px;
     margin-top: -16px;
-    width: 100%;
 }
 
 .verb-filter-btn {
-    padding: 6px 8px;
-    text-align: center;
+    padding: 6px 16px;
     border: 1px solid rgba(255, 255, 255, 0.15);
     background: transparent;
     border-radius: 50px;
