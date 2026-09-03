@@ -56,35 +56,35 @@ export async function initPhrasalVerbTask(container) {
     let currentItem = null;
     let answered    = false;
 
+    function entryKey(item) { return String(item.id); }
+
     function getPool() {
-        return phrasalVerbs.filter(p => !learnedPV.has(p.pv));
+        return phrasalVerbs.filter(p => !learnedPV.has(entryKey(p)));
     }
 
-    function learnedCount() {
-        return new Set(phrasalVerbs.filter(p => learnedPV.has(p.pv)).map(p => p.pv)).size;
-    }
+    function learnedCount() { return learnedPV.size; }
 
     function openLearnedModal() {
         const overlay = document.getElementById('modal-overlay');
         const titleEl = document.getElementById('modal-title');
         const bodyEl  = document.getElementById('modal-body');
-        const sortBtn = document.getElementById('modal-sort');
-        sortBtn.style.display = 'none';
+        document.getElementById('modal-sort').style.display = 'none';
 
-        const learned = [...new Set(phrasalVerbs.filter(p => learnedPV.has(p.pv)).map(p => p.pv))];
+        const learned = phrasalVerbs.filter(p => learnedPV.has(entryKey(p)));
         titleEl.textContent = `Выученные фразовые глаголы — ${learned.length}`;
         bodyEl.innerHTML = learned.length === 0
             ? '<p style="color:#64748b;text-align:center;padding:20px 0">Ещё ничего не выучено</p>'
-            : learned.map(pv => `
+            : learned.map(p => `
                 <div class="list-item">
-                    <span class="en">${pv}</span>
-                    <button class="ll-return-btn" data-pv="${pv}">Вернуть</button>
+                    <span class="en">${p.pv}</span>
+                    <span class="ru">${p.ru}</span>
+                    <button class="ll-return-btn" data-key="${entryKey(p)}">Вернуть</button>
                 </div>`).join('');
 
         bodyEl.querySelectorAll('.ll-return-btn').forEach(btn => {
             btn.addEventListener('click', async () => {
-                await removeLearnedWord('phrasal-verbs', btn.dataset.pv);
-                learnedPV.delete(btn.dataset.pv);
+                await removeLearnedWord('phrasal-verbs', btn.dataset.key);
+                learnedPV.delete(btn.dataset.key);
                 btn.closest('.list-item').remove();
                 titleEl.textContent = `Выученные фразовые глаголы — ${learnedCount()}`;
                 updateHeader();
@@ -198,8 +198,9 @@ export async function initPhrasalVerbTask(container) {
         container.querySelector('#pv-next').addEventListener('click', loadNext);
         container.querySelector('#pv-learned-list').addEventListener('click', openLearnedModal);
         container.querySelector('#pv-learn-btn').addEventListener('click', async () => {
-            await addLearnedWord('phrasal-verbs', currentItem.pv);
-            learnedPV.add(currentItem.pv);
+            const key = entryKey(currentItem);
+            await addLearnedWord('phrasal-verbs', key);
+            learnedPV.add(key);
             loadNext();
         });
     }
@@ -236,8 +237,9 @@ export async function initPhrasalVerbTask(container) {
         container.querySelector('#pv-next').addEventListener('click', loadNext);
         container.querySelector('#pv-learned-list').addEventListener('click', openLearnedModal);
         container.querySelector('#pv-learn-btn').addEventListener('click', async () => {
-            await addLearnedWord('phrasal-verbs', currentItem.pv);
-            learnedPV.add(currentItem.pv);
+            const key = entryKey(currentItem);
+            await addLearnedWord('phrasal-verbs', key);
+            learnedPV.add(key);
             loadNext();
         });
     }
