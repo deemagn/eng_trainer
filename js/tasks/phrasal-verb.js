@@ -1,4 +1,5 @@
 import { phrasalVerbs } from '../../data/phrasal-verbs.js';
+import { fetchLearnedWords, addLearnedWord, removeLearnedWord } from '../api.js';
 
 const API_URL   = 'https://api.goodnewsenglish.com';
 const TOKEN_KEY = 'et_token';
@@ -50,8 +51,53 @@ function pickMeaning(ru) {
     return parts[Math.floor(Math.random() * parts.length)];
 }
 
-export function initPhrasalVerbTask(container) {
-    let answered = false;
+export async function initPhrasalVerbTask(container) {
+    let learnedPV  = await fetchLearnedWords('phrasal-verbs');
+    let currentItem = null;
+    let answered    = false;
+
+    function getPool() {
+        return phrasalVerbs.filter(p => !learnedPV.has(p.pv));
+    }
+
+    function learnedCount() {
+        return new Set(phrasalVerbs.filter(p => learnedPV.has(p.pv)).map(p => p.pv)).size;
+    }
+
+    function openLearnedModal() {
+        const overlay = document.getElementById('modal-overlay');
+        const titleEl = document.getElementById('modal-title');
+        const bodyEl  = document.getElementById('modal-body');
+        const sortBtn = document.getElementById('modal-sort');
+        sortBtn.style.display = 'none';
+
+        const learned = [...new Set(phrasalVerbs.filter(p => learnedPV.has(p.pv)).map(p => p.pv))];
+        titleEl.textContent = `Выученные фразовые глаголы — ${learned.length}`;
+        bodyEl.innerHTML = learned.length === 0
+            ? '<p style="color:#64748b;text-align:center;padding:20px 0">Ещё ничего не выучено</p>'
+            : learned.map(pv => `
+                <div class="list-item">
+                    <span class="en">${pv}</span>
+                    <button class="ll-return-btn" data-pv="${pv}">Вернуть</button>
+                </div>`).join('');
+
+        bodyEl.querySelectorAll('.ll-return-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                await removeLearnedWord('phrasal-verbs', btn.dataset.pv);
+                learnedPV.delete(btn.dataset.pv);
+                btn.closest('.list-item').remove();
+                titleEl.textContent = `Выученные фразовые глаголы — ${learnedCount()}`;
+                updateHeader();
+            });
+        });
+
+        overlay.classList.add('open');
+    }
+
+    function updateHeader() {
+        const hdr = container.querySelector('#pv-header');
+        if (hdr) hdr.textContent = `Выучено: ${learnedCount()}`;
+    }
 
     function onAnswer(btn) {
         if (answered) return;
@@ -63,7 +109,12 @@ export function initPhrasalVerbTask(container) {
                 if (b.dataset.correct === 'true') b.classList.add('pv-option--correct');
             });
         }
-        container.querySelector('#pv-next-wrap')?.classList.add('open');
+        const nextWrap = container.querySelector('#pv-next-wrap');
+        if (nextWrap) {
+            nextWrap.classList.add('open');
+            const learnBtn = nextWrap.querySelector('#pv-learn-btn');
+            if (learnBtn) learnBtn.style.display = '';
+        }
     }
 
     // ── Вариант 1: API — предложение от Haiku ────────────────
@@ -107,6 +158,10 @@ export function initPhrasalVerbTask(container) {
 
         container.innerHTML = `
             <div class="pv-wrap">
+                <div class="pv-header-row">
+                    <span id="pv-header" class="pv-learned-count">Выучено: ${learnedCount()}</span>
+                    <button class="pv-learned-list-btn" id="pv-learned-list">Список</button>
+                </div>
                 <p class="pv-sentence">${md(data.s)}</p>
                 <div class="pv-translation-reveal" id="pv-translation">
                     <p class="pv-translation">${md(data.t)}</p>
@@ -124,6 +179,7 @@ export function initPhrasalVerbTask(container) {
                     `).join('')}
                 </div>
                 <div class="pv-next-reveal" id="pv-next-wrap">
+                    <button class="pv-btn-next pv-learn-btn" id="pv-learn-btn" style="display:none">✓ Выучено</button>
                     <button class="pv-btn-next" id="pv-next">Следующий →</button>
                 </div>
             </div>`;
@@ -140,6 +196,12 @@ export function initPhrasalVerbTask(container) {
         });
 
         container.querySelector('#pv-next').addEventListener('click', loadNext);
+        container.querySelector('#pv-learned-list').addEventListener('click', openLearnedModal);
+        container.querySelector('#pv-learn-btn').addEventListener('click', async () => {
+            await addLearnedWord('phrasal-verbs', currentItem.pv);
+            learnedPV.add(currentItem.pv);
+            loadNext();
+        });
     }
 
     // ── Вариант 2: только фразовый глагол + 4 перевода ───────
@@ -151,6 +213,10 @@ export function initPhrasalVerbTask(container) {
 
         container.innerHTML = `
             <div class="pv-wrap">
+                <div class="pv-header-row">
+                    <span id="pv-header" class="pv-learned-count">Выучено: ${learnedCount()}</span>
+                    <button class="pv-learned-list-btn" id="pv-learned-list">Список</button>
+                </div>
                 <p class="pv-verb-display">${item.pv}</p>
                 <div class="pv-options">
                     ${options.map(opt => `
@@ -158,6 +224,7 @@ export function initPhrasalVerbTask(container) {
                     `).join('')}
                 </div>
                 <div class="pv-next-reveal" id="pv-next-wrap">
+                    <button class="pv-btn-next pv-learn-btn" id="pv-learn-btn" style="display:none">✓ Выучено</button>
                     <button class="pv-btn-next" id="pv-next">Следующий →</button>
                 </div>
             </div>`;
@@ -167,17 +234,37 @@ export function initPhrasalVerbTask(container) {
         });
 
         container.querySelector('#pv-next').addEventListener('click', loadNext);
+        container.querySelector('#pv-learned-list').addEventListener('click', openLearnedModal);
+        container.querySelector('#pv-learn-btn').addEventListener('click', async () => {
+            await addLearnedWord('phrasal-verbs', currentItem.pv);
+            learnedPV.add(currentItem.pv);
+            loadNext();
+        });
     }
 
     // ── Выбор варианта ────────────────────────────────────────
     function loadNext() {
         answered = false;
-        const item = phrasalVerbs[Math.floor(Math.random() * phrasalVerbs.length)];
+        const pool = getPool();
+
+        if (pool.length === 0) {
+            container.innerHTML = `
+                <div class="pv-wrap">
+                    <p class="pv-verb-display" style="font-size:18px">Все фразовые глаголы выучены! 🎉</p>
+                    <div style="text-align:center;margin-top:16px">
+                        <button class="pv-btn-next" id="pv-learned-list">Список выученных</button>
+                    </div>
+                </div>`;
+            container.querySelector('#pv-learned-list').addEventListener('click', openLearnedModal);
+            return;
+        }
+
+        currentItem = pool[Math.floor(Math.random() * pool.length)];
 
         if (Math.random() < 0.5) {
-            renderSimpleTask(item);
+            renderSimpleTask(currentItem);
         } else {
-            loadApiTask(item);
+            loadApiTask(currentItem);
         }
     }
 
